@@ -23,7 +23,7 @@ const FloatingAddButton = () => {
       
       {/* Tooltip */}
       <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-        <div className="bg-fintech-card text-txt-primary text-xs font-medium px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap border border-white/10">
+        <div className="bg-slate-800 dark:bg-fintech-card text-white dark:text-txt-primary text-xs font-medium px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap border border-slate-700 dark:border-white/10">
           Add Expense
         </div>
       </div>

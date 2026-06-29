@@ -36,15 +36,17 @@ const Sidebar = () => {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0`}
       >
-        {/* Logo Section with Gradient Glow */}
+        {/* Logo Section */}
         <div className="p-6 pb-4">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <img src="/logo.png" alt="Logo" className="relative w-11 h-11 rounded-xl shadow-lg ring-2 ring-accent-primary/20" />
+            <div className="w-11 h-11 rounded-xl overflow-hidden ring-2 ring-brand-teal/20">
+              <img src="/finora-logo.png" alt="Finora" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h1 className="text-xl font-heading font-bold gradient-text">Smart Expense</h1>
-              <p className="text-xs text-slate-400 dark:text-txt-muted mt-0.5 tracking-wide">Behavior Analyzer</p>
+              <h1 className="text-xl font-heading">
+                <span className="font-bold text-brand-teal">Fin</span><span className="font-normal text-brand-teal">ora</span>
+              </h1>
+              <p className="text-xs text-slate-400 dark:text-txt-muted mt-0.5 tracking-wide">Smart Expense Analyzer</p>
             </div>
           </div>
         </div>

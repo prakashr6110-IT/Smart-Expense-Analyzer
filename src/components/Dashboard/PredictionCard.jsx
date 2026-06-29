@@ -25,16 +25,16 @@ const PredictionCard = ({ expenses, profile }) => {
           <div className="w-10 h-10 rounded-xl bg-accent-prediction/20 flex items-center justify-center">
             <TrendingUp size={20} className="text-accent-prediction" />
           </div>
-          <h3 className="text-lg font-heading font-semibold text-txt-primary">Spending Predictions</h3>
+          <h3 className="text-lg font-heading font-semibold text-slate-800 dark:text-txt-primary">Spending Predictions</h3>
         </div>
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <div className="w-16 h-16 bg-accent-prediction/10 rounded-2xl flex items-center justify-center mb-4">
             <TrendingUp size={28} className="text-accent-prediction" />
           </div>
-          <p className="text-txt-secondary font-medium">
+          <p className="text-slate-600 dark:text-txt-secondary font-medium">
             Need more data to generate predictions
           </p>
-          <p className="text-sm text-txt-muted mt-1.5">
+          <p className="text-sm text-slate-400 dark:text-txt-muted mt-1.5">
             Add expenses over 3+ months to unlock spending forecasts
           </p>
         </div>
@@ -63,14 +63,14 @@ const PredictionCard = ({ expenses, profile }) => {
             <Target size={16} className="text-accent-primary" />
             <span className="text-xs font-semibold text-accent-primary">Predicted Next Month</span>
           </div>
-          <p className="text-2xl font-heading font-bold text-txt-primary">
+          <p className="text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">
             ₹{prediction.predicted_amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
           </p>
           <div className="flex items-center gap-2 mt-2">
             <span className={`text-xs font-semibold ${prediction.trend_percentage > 0 ? 'text-accent-danger' : 'text-accent-success'}`}>
               {prediction.trend_percentage > 0 ? '↑' : '↓'} {Math.abs(prediction.trend_percentage).toFixed(1)}%
             </span>
-            <span className="text-xs text-txt-muted">vs last 3 months avg</span>
+            <span className="text-xs text-slate-400 dark:text-txt-muted">vs last 3 months avg</span>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ const PredictionCard = ({ expenses, profile }) => {
             <Zap size={16} className="text-accent-insights" />
             <span className="text-xs font-semibold text-accent-insights">Confidence Level</span>
           </div>
-          <p className="text-2xl font-heading font-bold text-txt-primary">
+          <p className="text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">
             {prediction.confidence.toFixed(0)}%
           </p>
           <div className="w-full bg-white/5 rounded-full h-2 mt-3">
@@ -89,7 +89,7 @@ const PredictionCard = ({ expenses, profile }) => {
               style={{ width: `${prediction.confidence}%` }}
             />
           </div>
-          <p className="text-xs text-txt-muted mt-2">
+          <p className="text-xs text-slate-400 dark:text-txt-muted mt-2">
             Based on {prediction.last_3_months_average > 0 ? '3 months' : 'available'} of data
           </p>
         </div>
@@ -103,7 +103,7 @@ const PredictionCard = ({ expenses, profile }) => {
           <p className={`text-2xl font-heading font-bold ${riskConfig.textMainColor}`}>
             {riskConfig.label}
           </p>
-          <p className="text-xs text-txt-muted mt-2">
+          <p className="text-xs text-slate-400 dark:text-txt-muted mt-2">
             {forecast.exhaustionDate
               ? `Budget may exhaust by ${format(forecast.exhaustionDate, 'MMM dd')}`
               : 'Budget should last the month'}
@@ -115,7 +115,7 @@ const PredictionCard = ({ expenses, profile }) => {
       {forecast.dailyRate > 0 && (
         <div className="glass rounded-2xl p-5 mb-5">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm font-heading font-semibold text-txt-primary">Budget Exhaustion Forecast</h4>
+            <h4 className="text-sm font-heading font-semibold text-slate-800 dark:text-txt-primary">Budget Exhaustion Forecast</h4>
             <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${riskConfig.badge}`}>
               {riskConfig.label}
             </span>
@@ -123,22 +123,22 @@ const PredictionCard = ({ expenses, profile }) => {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <p className="text-xs text-txt-muted mb-1">Daily Rate</p>
-              <p className="text-sm font-heading font-bold text-txt-primary">₹{forecast.dailyRate.toLocaleString('en-IN')}</p>
+              <p className="text-xs text-slate-400 dark:text-txt-muted mb-1">Daily Rate</p>
+              <p className="text-sm font-heading font-bold text-slate-800 dark:text-txt-primary">₹{forecast.dailyRate.toLocaleString('en-IN')}</p>
             </div>
             <div>
-              <p className="text-xs text-txt-muted mb-1">Days Passed</p>
-              <p className="text-sm font-heading font-bold text-txt-primary">{forecast.daysPassed} / {forecast.daysInMonth}</p>
+              <p className="text-xs text-slate-400 dark:text-txt-muted mb-1">Days Passed</p>
+              <p className="text-sm font-heading font-bold text-slate-800 dark:text-txt-primary">{forecast.daysPassed} / {forecast.daysInMonth}</p>
             </div>
             <div>
-              <p className="text-xs text-txt-muted mb-1">Remaining</p>
+              <p className="text-xs text-slate-400 dark:text-txt-muted mb-1">Remaining</p>
               <p className={`text-sm font-heading font-bold ${forecast.remainingBudget >= 0 ? 'text-accent-success' : 'text-accent-danger'}`}>
                 ₹{forecast.remainingBudget.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </p>
             </div>
             <div>
-              <p className="text-xs text-txt-muted mb-1">Days Left</p>
-              <p className="text-sm font-heading font-bold text-txt-primary">
+              <p className="text-xs text-slate-400 dark:text-txt-muted mb-1">Days Left</p>
+              <p className="text-sm font-heading font-bold text-slate-800 dark:text-txt-primary">
                 {forecast.daysRemaining !== null ? forecast.daysRemaining : '∞'}
               </p>
             </div>
@@ -146,7 +146,7 @@ const PredictionCard = ({ expenses, profile }) => {
 
           {/* Progress bar */}
           <div className="mt-4">
-            <div className="flex justify-between text-xs text-txt-muted mb-2">
+            <div className="flex justify-between text-xs text-slate-400 dark:text-txt-muted mb-2">
               <span>Day 1</span>
               <span>Today (Day {forecast.daysPassed})</span>
               <span>Day {forecast.daysInMonth}</span>
@@ -171,7 +171,7 @@ const PredictionCard = ({ expenses, profile }) => {
       {/* Prediction Insights */}
       {insights.length > 0 && (
         <div>
-          <h4 className="text-sm font-heading font-semibold text-txt-primary mb-3">Prediction Insights</h4>
+          <h4 className="text-sm font-heading font-semibold text-slate-800 dark:text-txt-primary mb-3">Prediction Insights</h4>
           <div className="space-y-2">
             {insights.map((insight, index) => (
               <div
@@ -179,7 +179,7 @@ const PredictionCard = ({ expenses, profile }) => {
                 className={`flex items-start gap-3 p-4 rounded-xl ${getInsightBg(insight.type)} transition-all duration-300 hover:scale-[1.01]`}
               >
                 {getInsightIcon(insight.type)}
-                <p className="text-sm text-txt-secondary flex-1">{insight.text}</p>
+                <p className="text-sm text-slate-600 dark:text-txt-secondary flex-1">{insight.text}</p>
               </div>
             ))}
           </div>
@@ -189,11 +189,11 @@ const PredictionCard = ({ expenses, profile }) => {
       {/* Predicted Split */}
       {prediction.predicted_necessary > 0 && (
         <div className="mt-5 pt-5 border-t border-white/10">
-          <h4 className="text-sm font-heading font-semibold text-txt-primary mb-4">Predicted Next Month Split</h4>
+          <h4 className="text-sm font-heading font-semibold text-slate-800 dark:text-txt-primary mb-4">Predicted Next Month Split</h4>
           <div className="flex gap-5">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-txt-muted">Necessary</span>
+                <span className="text-xs text-slate-400 dark:text-txt-muted">Necessary</span>
                 <span className="text-xs font-heading font-bold text-accent-success">₹{prediction.predicted_necessary?.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
               </div>
               <div className="w-full bg-white/5 rounded-full h-2">
@@ -202,7 +202,7 @@ const PredictionCard = ({ expenses, profile }) => {
             </div>
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-txt-muted">Luxury</span>
+                <span className="text-xs text-slate-400 dark:text-txt-muted">Luxury</span>
                 <span className="text-xs font-heading font-bold text-accent-insights">₹{prediction.predicted_luxury?.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
               </div>
               <div className="w-full bg-white/5 rounded-full h-2">

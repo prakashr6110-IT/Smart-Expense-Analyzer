@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useExpenses } from '../context/ExpenseContext';
-import Sidebar from '../components/Layout/Sidebar';
-import TopBar from '../components/Layout/TopBar';
+import Navbar from '../components/Layout/Navbar';
+import Footer from '../components/UI/Footer';
 import {
   Bell, AlertTriangle, Info, AlertCircle, Check, Trash2, Copy, ExternalLink,
   CheckCircle, Filter, Brain, TrendingUp, Shield, X
@@ -70,7 +70,7 @@ const Alerts = () => {
       case 'success': return { bg: 'bg-accent-success/5', border: 'border-accent-success/20 hover:border-accent-success/40', iconBg: 'bg-accent-success/20', iconColor: 'text-accent-success', badge: 'bg-accent-success text-white', badgeLabel: 'SUCCESS' };
       case 'prediction': return { bg: 'bg-accent-insights/5', border: 'border-accent-insights/20 hover:border-accent-insights/40', iconBg: 'bg-accent-insights/20', iconColor: 'text-accent-insights', badge: 'bg-accent-insights text-white', badgeLabel: 'PREDICTION' };
       case 'behavior': return { bg: 'bg-accent-primary/5', border: 'border-accent-primary/20 hover:border-accent-primary/40', iconBg: 'bg-accent-primary/20', iconColor: 'text-accent-primary', badge: 'bg-accent-primary text-white', badgeLabel: 'BEHAVIOR' };
-      default: return { bg: 'bg-fintech-secondary', border: 'border-white/10 hover:border-white/20', iconBg: 'bg-white/10', iconColor: 'text-txt-muted', badge: 'bg-txt-muted text-white', badgeLabel: 'NOTICE' };
+      default: return { bg: 'bg-slate-200 dark:bg-fintech-secondary', border: 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20', iconBg: 'bg-slate-200 dark:bg-white/10', iconColor: 'text-slate-400 dark:text-txt-muted', badge: 'bg-slate-500 text-white', badgeLabel: 'NOTICE' };
     }
   };
 
@@ -99,18 +99,16 @@ const Alerts = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-fintech-bg flex items-center justify-center">
-        <p className="text-txt-secondary">Loading...</p>
+      <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg flex items-center justify-center">
+        <p className="text-slate-600 dark:text-txt-secondary">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-fintech-bg transition-colors duration-300">
-      <Sidebar />
-      <div className="lg:ml-64">
-        <TopBar />
-        <main className="p-6">
+    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
+      <Navbar />
+      <main className="p-4 md:p-6 lg:p-8">
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
@@ -118,8 +116,8 @@ const Alerts = () => {
                 <Bell size={24} className="text-accent-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-heading font-bold text-txt-primary">Alerts</h2>
-                <p className="text-sm text-txt-muted">
+                <h2 className="text-h1 font-heading text-slate-800 dark:text-txt-primary">Alerts</h2>
+                <p className="text-sm text-slate-400 dark:text-txt-muted">
                   {unreadAlertsCount > 0 ? `${unreadAlertsCount} unread alert${unreadAlertsCount !== 1 ? 's' : ''}` : 'All caught up!'}
                 </p>
               </div>
@@ -143,12 +141,12 @@ const Alerts = () => {
           <div className="card mb-6">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
-                <label className="block text-xs font-medium text-txt-muted mb-2">Status</label>
-                <div className="flex items-center space-x-1 bg-fintech-secondary rounded-xl p-1 border border-white/5">
+                <label className="block text-xs font-medium text-slate-400 dark:text-txt-muted mb-2">Status</label>
+                <div className="flex items-center space-x-1 bg-slate-200 dark:bg-fintech-secondary rounded-xl p-1 border border-slate-200 dark:border-white/5">
                   {['all', 'unread', 'read'].map((f) => (
                     <button key={f} onClick={() => setFilter(f)}
                       className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        filter === f ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/30' : 'text-txt-secondary hover:bg-white/5'
+                        filter === f ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/30' : 'text-slate-600 dark:text-txt-secondary hover:bg-slate-200 dark:hover:bg-white/5'
                       }`}>
                       {f.charAt(0).toUpperCase() + f.slice(1)}
                       {f === 'unread' && unreadAlertsCount > 0 && <span className="ml-1 text-xs">({unreadAlertsCount})</span>}
@@ -158,11 +156,11 @@ const Alerts = () => {
               </div>
 
               <div className="flex-1">
-                <label className="block text-xs font-medium text-txt-muted mb-2">Alert Type</label>
+                <label className="block text-xs font-medium text-slate-400 dark:text-txt-muted mb-2">Alert Type</label>
                 <div className="flex items-center gap-1 flex-wrap">
                   <button onClick={() => setTypeFilter('all')}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      typeFilter === 'all' ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/30' : 'bg-fintech-secondary text-txt-secondary hover:bg-white/5 border border-white/5'
+                      typeFilter === 'all' ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/30' : 'bg-slate-200 dark:bg-fintech-secondary text-slate-600 dark:text-txt-secondary hover:bg-slate-200 dark:hover:bg-white/5 border border-slate-200 dark:border-white/5'
                     }`}>
                     All
                   </button>
@@ -173,7 +171,7 @@ const Alerts = () => {
                     return (
                       <button key={key} onClick={() => setTypeFilter(key)}
                         className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                          typeFilter === key ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/30' : 'bg-fintech-secondary text-txt-secondary hover:bg-white/5 border border-white/5'
+                          typeFilter === key ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/30' : 'bg-slate-200 dark:bg-fintech-secondary text-slate-600 dark:text-txt-secondary hover:bg-slate-200 dark:hover:bg-white/5 border border-slate-200 dark:border-white/5'
                         }`}>
                         <Icon size={14} /> {cat.label} <span className="text-xs opacity-70">({count})</span>
                       </button>
@@ -207,9 +205,9 @@ const Alerts = () => {
           {/* Alerts List */}
           {filteredAlerts.length === 0 ? (
             <div className="card text-center py-12">
-              <Bell size={48} className="mx-auto text-txt-muted mb-4" />
-              <p className="text-txt-secondary text-lg">No alerts to display</p>
-              <p className="text-sm text-txt-muted mt-2">
+              <Bell size={48} className="mx-auto text-slate-400 dark:text-txt-muted mb-4" />
+              <p className="text-slate-600 dark:text-txt-secondary text-lg">No alerts to display</p>
+              <p className="text-sm text-slate-400 dark:text-txt-muted mt-2">
                 {filter === 'all' && typeFilter === 'all' ? 'Alerts will appear here when detected' : `No ${filter !== 'all' ? filter : ''} ${typeFilter !== 'all' ? typeFilter : ''} alerts`}
               </p>
             </div>
@@ -233,10 +231,10 @@ const Alerts = () => {
                             <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${styles.badge}`}>
                               {ALERT_CATEGORIES[category]?.label || 'NOTICE'}
                             </span>
-                            {alert.is_read && <span className="text-xs text-txt-muted italic">Read</span>}
+                            {alert.is_read && <span className="text-xs text-slate-400 dark:text-txt-muted italic">Read</span>}
                           </div>
-                          <p className="text-txt-secondary font-medium">{alert.message}</p>
-                          <p className="text-xs text-txt-muted mt-2">
+                          <p className="text-slate-600 dark:text-txt-secondary font-medium">{alert.message}</p>
+                          <p className="text-xs text-slate-400 dark:text-txt-muted mt-2">
                             {format(parseISO(alert.created_at), 'MMM dd, yyyy • hh:mm a')}
                           </p>
                         </div>
@@ -263,7 +261,7 @@ const Alerts = () => {
             </div>
           )}
         </main>
-      </div>
+        <Footer />
     </div>
   );
 };
@@ -273,21 +271,21 @@ const ConfirmModal = ({
   DELETE_POLICY_SQL, onCancel, onConfirm
 }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-    <div className={`bg-fintech-card rounded-2xl shadow-2xl p-6 mx-4 w-full border border-white/10 ${deleteError ? 'max-w-md' : 'max-w-sm'}`}>
+    <div className={`bg-white dark:bg-fintech-card rounded-2xl shadow-2xl p-6 mx-4 w-full border border-slate-200 dark:border-white/10 ${deleteError ? 'max-w-md' : 'max-w-sm'}`}>
       <div className="flex items-center gap-3 mb-4">
         <div className="flex items-center justify-center w-10 h-10 rounded-full bg-accent-danger/20">
           <Trash2 size={20} className="text-accent-danger" />
         </div>
-        <h3 className="text-lg font-heading font-bold text-txt-primary">{title}</h3>
+        <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">{title}</h3>
       </div>
-      <p className="text-txt-secondary mb-6">{message}</p>
+      <p className="text-slate-600 dark:text-txt-secondary mb-6">{message}</p>
 
       {deleteError && (
         <div className="mb-4 p-4 bg-accent-warning/10 border border-accent-warning/20 rounded-xl">
           <p className="text-sm font-semibold text-accent-warning mb-3">
             Database fix needed — a DELETE policy is missing. Do this once:
           </p>
-          <div className="bg-fintech-bg rounded-lg p-3 mb-3">
+          <div className="bg-slate-100 dark:bg-fintech-bg rounded-lg p-3 mb-3">
             <code className="text-accent-success text-xs font-mono break-all">{DELETE_POLICY_SQL}</code>
           </div>
           <div className="flex gap-2">
@@ -307,7 +305,7 @@ const ConfirmModal = ({
 
       <div className="flex gap-3">
         <button onClick={onCancel}
-          className="flex-1 px-4 py-2 border border-white/10 text-txt-secondary rounded-xl font-medium hover:bg-white/5 transition-colors">
+          className="flex-1 px-4 py-2 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-txt-secondary rounded-xl font-medium hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
           Cancel
         </button>
         <button onClick={onConfirm} disabled={deleting}

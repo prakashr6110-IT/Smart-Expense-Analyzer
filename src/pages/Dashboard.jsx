@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useExpenses } from '../context/ExpenseContext';
 import DashboardHero from '../components/Dashboard/DashboardHero';
@@ -9,12 +10,16 @@ import SpendingStreaks from '../components/Dashboard/SpendingStreaks';
 import PredictionCard from '../components/Dashboard/PredictionCard';
 import RecentTransactions from '../components/Dashboard/RecentTransactions';
 import AlertsSection from '../components/Dashboard/AlertsSection';
+import SummaryMetrics from '../components/Dashboard/SummaryMetrics';
 import FloatingAddButton from '../components/Common/FloatingAddButton';
-import Sidebar from '../components/Layout/Sidebar';
-import TopBar from '../components/Layout/TopBar';
+import Navbar from '../components/Layout/Navbar';
+import HeroSection from '../components/Landing/HeroSection';
+import EmptyState from '../components/UI/EmptyState';
+import Footer from '../components/UI/Footer';
 import { Trash2 } from 'lucide-react';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { expenses, alerts, predictions, deleteExpense, loading } = useExpenses();
   const [clearing, setClearing] = useState(false);
@@ -40,24 +45,38 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-fintech-bg flex items-center justify-center">
-        <p className="text-txt-secondary">Loading...</p>
+      <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg flex items-center justify-center">
+        <p className="text-slate-600 dark:text-txt-secondary">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-fintech-bg transition-colors duration-300">
-      <Sidebar />
+    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
+      <Navbar />
 
-      <div className="lg:ml-64">
-        <TopBar />
+      {/* Hero Section */}
+      <HeroSection />
 
-        <main className="p-4 md:p-6 pb-24">
-          {/* Premium Hero Section */}
-          <DashboardHero user={user} profile={profile} expenses={expenses} />
+      {/* Summary Metrics (below hero, overlapping slightly) */}
+      <SummaryMetrics expenses={expenses} profile={profile} />
 
-          {/* Spending Breakdown Stats */}
+      {/* Analyzer Section */}
+      <div id="analyzer-section">
+        <main className="p-4 md:p-6 lg:p-8 pb-24">
+          {expenses.length === 0 ? (
+            /* Empty State - shown when no expenses */
+            <EmptyState
+              heading="No expenses yet"
+              subheading="Click the wallet icon above to add your first expense and start seeing insights"
+              onIconClick={() => navigate('/add-expense')}
+            />
+          ) : (
+            <>
+              {/* Premium Hero Section */}
+              <DashboardHero user={user} profile={profile} expenses={expenses} />
+
+              {/* Spending Breakdown Stats */}
           <TopStatsCards expenses={expenses} profile={profile} />
 
           {/* Financial Score Card */}
@@ -68,7 +87,7 @@ const Dashboard = () => {
           />
 
           {/* Behavior Insights + Predictions side by side on large screens */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-16">
             <BehaviorInsights expenses={expenses} profile={profile} />
             <PredictionCard expenses={expenses} profile={profile} />
           </div>
@@ -95,11 +114,16 @@ const Dashboard = () => {
               </button>
             </div>
           )}
+          </>
+          )}
         </main>
       </div>
 
       {/* Floating Add Expense Button */}
       <FloatingAddButton />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

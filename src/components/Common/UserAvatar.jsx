@@ -85,7 +85,7 @@ const UserAvatar = ({
     return (
       <div className="flex flex-col items-center gap-2">
         {avatarElement}
-        <span className="font-semibold text-txt-primary text-center leading-tight">
+        <span className="font-semibold text-slate-800 dark:text-txt-primary text-center leading-tight">
           {displayName}
         </span>
       </div>
@@ -95,7 +95,7 @@ const UserAvatar = ({
   return (
     <div className="flex items-center gap-3">
       {avatarElement}
-      <span className="font-semibold text-txt-primary leading-tight">
+      <span className="font-semibold text-slate-800 dark:text-txt-primary leading-tight">
         {displayName}
       </span>
     </div>

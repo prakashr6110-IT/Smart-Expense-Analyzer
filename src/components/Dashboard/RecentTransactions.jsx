@@ -33,14 +33,14 @@ const RecentTransactions = ({ expenses }) => {
           <div className="w-10 h-10 rounded-xl bg-accent-primary/20 flex items-center justify-center">
             <Receipt size={20} className="text-accent-primary" />
           </div>
-          <h3 className="text-lg font-heading font-bold text-txt-primary">Recent Transactions</h3>
+          <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">Recent Transactions</h3>
         </div>
         <div className="flex flex-col items-center justify-center py-10 text-center">
-          <div className="w-16 h-16 bg-fintech-secondary rounded-2xl flex items-center justify-center mb-4 border border-white/5">
-            <Receipt size={28} className="text-txt-muted" />
+          <div className="w-16 h-16 bg-slate-200 dark:bg-fintech-secondary rounded-2xl flex items-center justify-center mb-4 border border-slate-200 dark:border-white/5">
+            <Receipt size={28} className="text-slate-400 dark:text-txt-muted" />
           </div>
-          <p className="text-txt-secondary font-medium">No transactions yet</p>
-          <p className="text-sm text-txt-muted mt-1">Add your first expense to get started</p>
+          <p className="text-slate-600 dark:text-txt-secondary font-medium">No transactions yet</p>
+          <p className="text-sm text-slate-400 dark:text-txt-muted mt-1">Add your first expense to get started</p>
         </div>
       </div>
     );
@@ -53,7 +53,7 @@ const RecentTransactions = ({ expenses }) => {
           <div className="w-10 h-10 rounded-xl bg-accent-primary/20 flex items-center justify-center">
             <Receipt size={20} className="text-accent-primary" />
           </div>
-          <h3 className="text-lg font-heading font-bold text-txt-primary">Recent Transactions</h3>
+          <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">Recent Transactions</h3>
         </div>
         {expenses.length > 5 && (
           <Link
@@ -75,7 +75,7 @@ const RecentTransactions = ({ expenses }) => {
           return (
             <div
               key={expense.id}
-              className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-all duration-200 group border border-transparent hover:border-white/5"
+              className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all duration-200 group border border-transparent hover:border-slate-200 dark:hover:border-white/5"
             >
               {/* Category icon */}
               <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
@@ -84,13 +84,13 @@ const RecentTransactions = ({ expenses }) => {
 
               {/* Details */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-txt-primary truncate">
+                <p className="text-sm font-semibold text-slate-800 dark:text-txt-primary truncate">
                   {expense.description || expense.category}
                 </p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xs text-txt-muted">{expense.category}</span>
-                  <span className="w-1 h-1 rounded-full bg-txt-muted/50" />
-                  <span className="text-xs text-txt-muted">
+                  <span className="text-xs text-slate-400 dark:text-txt-muted">{expense.category}</span>
+                  <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-txt-muted/50" />
+                  <span className="text-xs text-slate-400 dark:text-txt-muted">
                     {format(parseISO(expense.expense_date), 'MMM dd')}
                   </span>
                 </div>
@@ -98,7 +98,7 @@ const RecentTransactions = ({ expenses }) => {
 
               {/* Amount + type */}
               <div className="flex flex-col items-end flex-shrink-0">
-                <span className="text-sm font-bold text-txt-primary">
+                <span className="text-sm font-bold text-slate-800 dark:text-txt-primary">
                   -₹{parseFloat(expense.amount).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                 </span>
                 <span className={`text-[10px] font-semibold mt-0.5 px-1.5 py-0.5 rounded ${

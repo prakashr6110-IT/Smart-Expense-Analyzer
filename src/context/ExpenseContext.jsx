@@ -34,10 +34,12 @@ export const ExpenseProvider = ({ children, userId, profile }) => {
         .order('expense_date', { ascending: false });
 
       if (error) throw error;
-      const enriched = (data || []).map(exp => ({
-        ...exp,
-        expense_type: exp.expense_type || getExpenseType(exp.category),
-      }));
+      const enriched = (data || []).map(exp => {
+        const resolvedType = (exp.expense_type && exp.expense_type.trim() !== '')
+          ? exp.expense_type
+          : getExpenseType(exp.category);
+        return { ...exp, expense_type: resolvedType };
+      });
       setExpenses(enriched);
     } catch (error) {
       console.error('Error fetching expenses:', error);
@@ -116,10 +118,12 @@ export const ExpenseProvider = ({ children, userId, profile }) => {
     if (!allExpenses) return;
 
     // Enrich fetched expenses with expense_type for analysis
-    const enrichedExpenses = allExpenses.map(exp => ({
-      ...exp,
-      expense_type: exp.expense_type || getExpenseType(exp.category),
-    }));
+    const enrichedExpenses = allExpenses.map(exp => {
+      const resolvedType = (exp.expense_type && exp.expense_type.trim() !== '')
+        ? exp.expense_type
+        : getExpenseType(exp.category);
+      return { ...exp, expense_type: resolvedType };
+    });
 
     const monthlyBudget = prof?.monthly_budget ? parseFloat(prof.monthly_budget) : 10000;
 

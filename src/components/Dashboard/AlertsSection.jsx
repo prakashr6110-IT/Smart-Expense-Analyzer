@@ -63,11 +63,11 @@ const AlertsSection = ({ alerts }) => {
           <div className="w-10 h-10 rounded-xl bg-accent-primary/20 flex items-center justify-center">
             <Bell size={20} className="text-accent-primary" />
           </div>
-          <h3 className="text-lg font-heading font-bold text-txt-primary">Active Alerts</h3>
+          <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">Active Alerts</h3>
         </div>
         <div className="text-center py-6">
-          <p className="text-txt-secondary">No active alerts</p>
-          <p className="text-sm text-txt-muted mt-1">You're doing great!</p>
+          <p className="text-slate-600 dark:text-txt-secondary">No active alerts</p>
+          <p className="text-sm text-slate-400 dark:text-txt-muted mt-1">You're doing great!</p>
         </div>
       </div>
     );
@@ -80,7 +80,7 @@ const AlertsSection = ({ alerts }) => {
           <div className="w-10 h-10 rounded-xl bg-accent-primary/20 flex items-center justify-center">
             <Bell size={20} className="text-accent-primary" />
           </div>
-          <h3 className="text-lg font-heading font-bold text-txt-primary">Active Alerts</h3>
+          <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">Active Alerts</h3>
         </div>
         <Link
           to="/alerts"
@@ -104,7 +104,7 @@ const AlertsSection = ({ alerts }) => {
                 <div className="flex items-center gap-2 mb-1">
                   {getSeverityBadge(alert.alert_type)}
                 </div>
-                <p className="text-sm text-txt-secondary">{alert.message}</p>
+                <p className="text-sm text-slate-600 dark:text-txt-secondary">{alert.message}</p>
               </div>
             </div>
           </div>

@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useExpenses } from '../context/ExpenseContext';
-import Sidebar from '../components/Layout/Sidebar';
-import TopBar from '../components/Layout/TopBar';
+import Navbar from '../components/Layout/Navbar';
+import Footer from '../components/UI/Footer';
 import SmartInsightsPanel from '../components/Expense/SmartInsightsPanel';
+import Button from '../components/UI/Button';
+import Input from '../components/UI/Input';
+import Select from '../components/UI/Select';
+import Textarea from '../components/UI/Textarea';
 import { PlusCircle, CheckCircle, AlertCircle, Shield, Gem } from 'lucide-react';
 import { ALL_CATEGORIES, getExpenseType } from '../utils/categoryClassification';
 
@@ -21,13 +25,19 @@ const AddExpense = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
+  // Check if the selected category is one of the "Other" variants
+  const isOtherSelected = formData.category === 'Other (Necessary)' || formData.category === 'Other (Luxury)';
+
   // Auto-suggest expense_type when category changes
   useEffect(() => {
-    const category = formData.category === 'Other'
-      ? formData.customCategory.trim()
-      : formData.category;
-    const suggested = getExpenseType(category);
-    setFormData(prev => ({ ...prev, expense_type: suggested }));
+    if (formData.category === 'Other (Necessary)') {
+      setFormData(prev => ({ ...prev, expense_type: 'necessary' }));
+    } else if (formData.category === 'Other (Luxury)') {
+      setFormData(prev => ({ ...prev, expense_type: 'luxury' }));
+    } else {
+      const suggested = getExpenseType(formData.category);
+      setFormData(prev => ({ ...prev, expense_type: suggested }));
+    }
   }, [formData.category]);
 
   const handleChange = (e) => {
@@ -49,7 +59,7 @@ const AddExpense = () => {
     setSuccess(false);
 
     // Determine final category
-    const finalCategory = formData.category === 'Other'
+    const finalCategory = (formData.category === 'Other (Necessary)' || formData.category === 'Other (Luxury)')
       ? formData.customCategory.trim() || 'Other'
       : formData.category;
 
@@ -87,30 +97,29 @@ const AddExpense = () => {
   };
 
   // Get the auto-suggested type for current category
-  const activeCategory = formData.category === 'Other'
+  const activeCategory = isOtherSelected
     ? formData.customCategory.trim()
     : formData.category;
-  const suggestedType = getExpenseType(activeCategory);
+  const suggestedType = isOtherSelected
+    ? (formData.category === 'Other (Necessary)' ? 'necessary' : 'luxury')
+    : getExpenseType(activeCategory);
   const isAutoSuggested = formData.expense_type === suggestedType;
 
   return (
-    <div className="min-h-screen bg-fintech-bg transition-colors duration-300">
-      <Sidebar />
+    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
+      <Navbar />
 
-      <div className="lg:ml-64">
-        <TopBar />
-
-        <main className="p-6 animate-fade-in pb-24">
-          <div className="max-w-7xl mx-auto">
+      <main className="p-4 md:p-6 lg:p-8 animate-fade-in pb-24">
+          <div>
             {/* Page Header */}
             <div className="mb-6">
-              <h1 className="text-2xl font-heading font-bold text-txt-primary flex items-center gap-3">
+              <h1 className="text-h1 font-heading text-slate-800 dark:text-txt-primary flex items-center gap-3">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-accent-primary to-accent-insights">
                   <PlusCircle size={22} className="text-white" />
                 </div>
                 Add New Expense
               </h1>
-              <p className="text-sm text-txt-muted mt-2 ml-13">Record an expense and see real-time spending insights</p>
+              <p className="text-sm text-slate-400 dark:text-txt-muted mt-2 ml-13">Record an expense and see real-time spending insights</p>
             </div>
 
             {/* Two-Column Layout */}
@@ -122,7 +131,7 @@ const AddExpense = () => {
                     <div className="w-10 h-10 rounded-xl bg-accent-primary/20 flex items-center justify-center mr-3">
                       <PlusCircle size={20} className="text-accent-primary" />
                     </div>
-                    <h2 className="text-xl font-heading font-bold text-txt-primary">Expense Details</h2>
+                    <h2 className="text-h2 font-heading text-slate-800 dark:text-txt-primary">Expense Details</h2>
                   </div>
 
                   {success && (
@@ -140,86 +149,76 @@ const AddExpense = () => {
                   )}
 
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                      <label htmlFor="amount" className="block text-sm font-medium text-txt-secondary mb-2">
-                        Amount (₹) *
-                      </label>
-                      <input
-                        type="number"
-                        id="amount"
-                        name="amount"
-                        value={formData.amount}
-                        onChange={handleChange}
-                        className="input-field"
-                        placeholder="₹ 0.00"
-                        step="0.01"
-                        min="0.01"
-                        required
-                      />
-                    </div>
+                    <Input
+                      label="Amount (₹) *"
+                      type="number"
+                      name="amount"
+                      value={formData.amount}
+                      onChange={handleChange}
+                      placeholder="₹ 0.00"
+                      step="0.01"
+                      min="0.01"
+                      required
+                    />
 
-                    <div>
-                      <label htmlFor="category" className="block text-sm font-medium text-txt-secondary mb-2">
-                        Category *
-                      </label>
-                      <select
-                        id="category"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                        className="input-field"
-                        required
-                      >
-                        <optgroup label="Necessary Expenses">
-                          {ALL_CATEGORIES.filter(cat => getExpenseType(cat) === 'necessary' && cat !== 'Other').map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
-                          ))}
-                        </optgroup>
-                        <optgroup label="Luxury Expenses">
-                          {ALL_CATEGORIES.filter(cat => getExpenseType(cat) === 'luxury' && cat !== 'Other').map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
-                          ))}
-                        </optgroup>
-                        <option value="Other">Other</option>
-                      </select>
+                    <Select
+                      label="Category *"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      required
+                    >
+                      <optgroup label="Necessary Expenses">
+                        {ALL_CATEGORIES.filter(cat => getExpenseType(cat) === 'necessary' && cat !== 'Other').map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                        <option value="Other (Necessary)">Other (specify)</option>
+                      </optgroup>
+                      <optgroup label="Luxury Expenses">
+                        {ALL_CATEGORIES.filter(cat => getExpenseType(cat) === 'luxury' && cat !== 'Other').map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                        <option value="Other (Luxury)">Other (specify)</option>
+                      </optgroup>
+                    </Select>
 
-                      {/* Custom Category Input - Shows when "Other" is selected */}
-                      {formData.category === 'Other' && (
-                        <div className="mt-3">
-                          <label htmlFor="customCategory" className="block text-sm font-medium text-txt-secondary mb-2">
-                            Specify Your Category *
-                          </label>
-                          <input
-                            type="text"
-                            id="customCategory"
-                            name="customCategory"
-                            value={formData.customCategory}
-                            onChange={handleChange}
-                            className="input-field"
-                            placeholder="e.g., Gym, Pet Care, Gifts, Donation..."
-                            required
-                            autoFocus
-                          />
-                          <p className="text-xs text-txt-muted mt-1">
-                            Type your own category name for this expense
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                    {/* Custom Category Input - Shows when "Other" is selected */}
+                    {isOtherSelected && (
+                      <div>
+                        <Input
+                          label="Specify Your Category *"
+                          type="text"
+                          name="customCategory"
+                          value={formData.customCategory}
+                          onChange={handleChange}
+                          placeholder={formData.category === 'Other (Necessary)'
+                            ? 'e.g., Gym, Pet Care, Childcare, Maintenance...'
+                            : 'e.g., Concert Tickets, Spa, Hobbies, Gifts...'}
+                          required
+                          autoFocus
+                        />
+                        <p className="text-xs text-slate-400 dark:text-txt-muted mt-1">
+                          Type your own category name — it will be saved as{' '}
+                          <span className="font-medium text-slate-600 dark:text-txt-secondary">
+                            {formData.category === 'Other (Necessary)' ? 'Necessary' : 'Luxury'}
+                          </span>
+                        </p>
+                      </div>
+                    )}
 
                     {/* Expense Type Toggle */}
                     <div>
-                      <label className="block text-sm font-medium text-txt-secondary mb-2">
+                      <label className="block text-caption font-medium text-slate-500 dark:text-[#94A3B8] mb-1.5">
                         Expense Type *
                       </label>
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
                           onClick={() => handleTypeChange('necessary')}
-                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm border-2 transition-all duration-200 ${
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-[10px] font-semibold text-sm border-2 transition-all duration-200 min-h-[44px] ${
                             formData.expense_type === 'necessary'
                               ? 'border-accent-success bg-accent-success/10 text-accent-success shadow-lg shadow-accent-success/10'
-                              : 'border-white/10 bg-fintech-secondary text-txt-muted hover:border-white/20'
+                              : 'border-slate-200 dark:border-white/10 bg-slate-200 dark:bg-[#1E293B] text-slate-400 dark:text-txt-muted hover:border-slate-300 dark:hover:border-white/20'
                           }`}
                         >
                           <Shield size={18} />
@@ -228,76 +227,57 @@ const AddExpense = () => {
                         <button
                           type="button"
                           onClick={() => handleTypeChange('luxury')}
-                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm border-2 transition-all duration-200 ${
+                          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-[10px] font-semibold text-sm border-2 transition-all duration-200 min-h-[44px] ${
                             formData.expense_type === 'luxury'
                               ? 'border-accent-insights bg-accent-insights/10 text-accent-insights shadow-lg shadow-accent-insights/10'
-                              : 'border-white/10 bg-fintech-secondary text-txt-muted hover:border-white/20'
+                              : 'border-slate-200 dark:border-white/10 bg-slate-200 dark:bg-[#1E293B] text-slate-400 dark:text-txt-muted hover:border-slate-300 dark:hover:border-white/20'
                           }`}
                         >
                           <Gem size={18} />
                           <span>Luxury</span>
                         </button>
                       </div>
-                      <p className="text-xs text-txt-muted mt-2">
+                      <p className="text-xs text-slate-400 dark:text-txt-muted mt-2">
                         {isAutoSuggested ? (
-                          <span>Auto-suggested: <span className="font-medium text-txt-secondary">{suggestedType === 'necessary' ? 'Necessary' : 'Luxury'}</span> based on category "{activeCategory || formData.category}"</span>
+                          <span>Auto-suggested: <span className="font-medium text-slate-600 dark:text-txt-secondary">{suggestedType === 'necessary' ? 'Necessary' : 'Luxury'}</span> based on category "{activeCategory || formData.category}"</span>
                         ) : (
-                          <span>Manually set to <span className="font-medium text-txt-secondary">{formData.expense_type === 'necessary' ? 'Necessary' : 'Luxury'}</span> (auto-suggestion was: {suggestedType === 'necessary' ? 'Necessary' : 'Luxury'})</span>
+                          <span>Manually set to <span className="font-medium text-slate-600 dark:text-txt-secondary">{formData.expense_type === 'necessary' ? 'Necessary' : 'Luxury'}</span> (auto-suggestion was: {suggestedType === 'necessary' ? 'Necessary' : 'Luxury'})</span>
                         )}
                       </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="date" className="block text-sm font-medium text-txt-secondary mb-2">
-                          Date *
-                        </label>
-                        <input
-                          type="date"
-                          id="date"
-                          name="date"
-                          value={formData.date}
-                          onChange={handleChange}
-                          className="input-field"
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="time" className="block text-sm font-medium text-txt-secondary mb-2">
-                          Time of Expense *
-                        </label>
-                        <input
-                          type="time"
-                          id="time"
-                          name="time"
-                          value={formData.time}
-                          onChange={handleChange}
-                          className="input-field"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="description" className="block text-sm font-medium text-txt-secondary mb-2">
-                        Description
-                      </label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        value={formData.description}
+                      <Input
+                        label="Date *"
+                        type="date"
+                        name="date"
+                        value={formData.date}
                         onChange={handleChange}
-                        className="input-field"
-                        placeholder="Optional details about this expense..."
-                        rows="3"
+                        required
+                      />
+                      <Input
+                        label="Time of Expense *"
+                        type="time"
+                        name="time"
+                        value={formData.time}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
 
-                    <button
+                    <Textarea
+                      label="Description"
+                      name="description"
+                      value={formData.description}
+                      onChange={handleChange}
+                      placeholder="Optional details about this expense..."
+                      rows={3}
+                    />
+
+                    <Button
                       type="submit"
                       disabled={loading}
-                      className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                      fullWidth
                     >
                       {loading ? (
                         <>
@@ -309,7 +289,7 @@ const AddExpense = () => {
                           <span>Add Expense</span>
                         </>
                       )}
-                    </button>
+                    </Button>
                   </form>
                 </div>
               </div>
@@ -318,14 +298,14 @@ const AddExpense = () => {
               <div className="xl:col-span-2">
                 <SmartInsightsPanel
                   pendingAmount={formData.amount}
-                  pendingCategory={formData.category === 'Other' ? formData.customCategory : formData.category}
+                  pendingCategory={isOtherSelected ? formData.customCategory : formData.category}
                   pendingType={formData.expense_type}
                 />
               </div>
             </div>
           </div>
         </main>
-      </div>
+        <Footer />
     </div>
   );
 };

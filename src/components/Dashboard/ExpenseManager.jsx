@@ -49,13 +49,13 @@ const ExpenseManager = ({ expenses, onDelete }) => {
   if (expenses.length === 0) {
     return (
       <div className="card">
-        <h3 className="text-xl font-heading font-bold text-txt-primary mb-4">Expense Manager</h3>
+        <h3 className="text-xl font-heading font-bold text-slate-800 dark:text-txt-primary mb-4">Expense Manager</h3>
         <div className="text-center py-12">
-          <div className="w-16 h-16 bg-fintech-secondary rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
-            <IndianRupee size={28} className="text-txt-muted" />
+          <div className="w-16 h-16 bg-slate-200 dark:bg-fintech-secondary rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-200 dark:border-white/5">
+            <IndianRupee size={28} className="text-slate-400 dark:text-txt-muted" />
           </div>
-          <p className="text-txt-secondary font-medium">No expenses recorded yet</p>
-          <p className="text-sm text-txt-muted mt-1">Add your first expense to get started</p>
+          <p className="text-slate-600 dark:text-txt-secondary font-medium">No expenses recorded yet</p>
+          <p className="text-sm text-slate-400 dark:text-txt-muted mt-1">Add your first expense to get started</p>
         </div>
       </div>
     );
@@ -64,33 +64,33 @@ const ExpenseManager = ({ expenses, onDelete }) => {
   return (
     <div className="card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-heading font-bold text-txt-primary">Expense Manager</h3>
-        <span className="text-sm text-txt-muted">Showing {filteredExpenses.length} of {expenses.length}</span>
+        <h3 className="text-xl font-heading font-bold text-slate-800 dark:text-txt-primary">Expense Manager</h3>
+        <span className="text-sm text-slate-400 dark:text-txt-muted">Showing {filteredExpenses.length} of {expenses.length}</span>
       </div>
 
       <div className="mb-4 space-y-3">
         <div className="flex gap-2">
           <div className="flex-1 relative">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-txt-muted" />
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-txt-muted" />
             <input type="text" placeholder="Search by description, category, or amount..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-fintech-secondary border border-white/10 rounded-xl text-txt-primary placeholder-txt-muted focus:ring-2 focus:ring-accent-primary/50 focus:border-transparent transition-all text-sm" />
-            {searchQuery && (<button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-txt-muted hover:text-txt-secondary"><X size={16} /></button>)}
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-200 dark:bg-fintech-secondary border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-txt-primary placeholder-slate-400 dark:placeholder-txt-muted focus:ring-2 focus:ring-accent-primary/50 focus:border-transparent transition-all text-sm" />
+            {searchQuery && (<button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-txt-muted hover:text-slate-600 dark:hover:text-txt-secondary"><X size={16} /></button>)}
           </div>
           <button onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${showFilters || hasActiveFilters ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/20' : 'bg-fintech-secondary text-txt-secondary hover:bg-white/10 border border-white/10'}`}>
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${showFilters || hasActiveFilters ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/20' : 'bg-slate-200 dark:bg-fintech-secondary text-slate-600 dark:text-txt-secondary hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10'}`}>
             <Filter size={18} /> Filters {hasActiveFilters && <span className="w-2 h-2 bg-white rounded-full" />}
           </button>
           <div className="relative">
             <button onClick={() => setShowSortMenu(!showSortMenu)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-fintech-secondary text-txt-secondary rounded-xl font-medium hover:bg-white/10 border border-white/10 transition-all">
+              className="flex items-center gap-2 px-4 py-2.5 bg-slate-200 dark:bg-fintech-secondary text-slate-600 dark:text-txt-secondary rounded-xl font-medium hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 transition-all">
               {sortBy === 'latest' || sortBy === 'highest' ? <SortDesc size={18} /> : <SortAsc size={18} />} Sort
               <ChevronDown size={14} className={`transition-transform ${showSortMenu ? 'rotate-180' : ''}`} />
             </button>
             {showSortMenu && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-fintech-card rounded-xl shadow-xl border border-white/10 z-10 py-1">
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-fintech-card rounded-xl shadow-xl border border-slate-200 dark:border-white/10 z-10 py-1">
                 {[{ value: 'latest', label: 'Latest First' }, { value: 'oldest', label: 'Oldest First' }, { value: 'highest', label: 'Highest Amount' }, { value: 'lowest', label: 'Lowest Amount' }].map((option) => (
                   <button key={option.value} onClick={() => { setSortBy(option.value); setShowSortMenu(false); }}
-                    className={`w-full text-left px-4 py-2 text-sm transition-colors ${sortBy === option.value ? 'bg-accent-primary/10 text-accent-primary font-medium' : 'text-txt-secondary hover:bg-white/5'}`}>
+                    className={`w-full text-left px-4 py-2 text-sm transition-colors ${sortBy === option.value ? 'bg-accent-primary/10 text-accent-primary font-medium' : 'text-slate-600 dark:text-txt-secondary hover:bg-slate-100 dark:hover:bg-white/5'}`}>
                     {option.label}
                   </button>
                 ))}
@@ -100,7 +100,7 @@ const ExpenseManager = ({ expenses, onDelete }) => {
         </div>
 
         {showFilters && (
-          <div className="p-4 bg-fintech-secondary/50 rounded-xl border border-white/10 animate-slide-in-down">
+          <div className="p-4 bg-slate-100/50 dark:bg-fintech-secondary/50 rounded-xl border border-slate-200 dark:border-white/10 animate-slide-in-down">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {[
                 { label: 'Category', value: filters.category, key: 'category', type: 'select', options: categories.map(c => ({ value: c, label: c === 'all' ? 'All Categories' : c })) },
@@ -110,16 +110,16 @@ const ExpenseManager = ({ expenses, onDelete }) => {
                 { label: 'Max Amount', value: filters.maxAmount, key: 'maxAmount', type: 'number', placeholder: '₹∞' },
               ].map(field => (
                 <div key={field.key}>
-                  <label className="block text-xs font-medium text-txt-muted mb-1">{field.label}</label>
+                  <label className="block text-xs font-medium text-slate-400 dark:text-txt-muted mb-1">{field.label}</label>
                   {field.type === 'select' ? (
                     <select value={field.value} onChange={(e) => setFilters({ ...filters, [field.key]: e.target.value })}
-                      className="w-full px-3 py-2 bg-fintech-card border border-white/10 rounded-lg text-sm text-txt-primary focus:ring-2 focus:ring-accent-primary/50">
+                      className="w-full px-3 py-2 bg-white dark:bg-fintech-card border border-slate-200 dark:border-white/10 rounded-lg text-sm text-slate-800 dark:text-txt-primary focus:ring-2 focus:ring-accent-primary/50">
                       {field.options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                     </select>
                   ) : (
                     <input type="number" placeholder={field.placeholder} value={field.value}
                       onChange={(e) => setFilters({ ...filters, [field.key]: e.target.value })}
-                      className="w-full px-3 py-2 bg-fintech-card border border-white/10 rounded-lg text-sm text-txt-primary focus:ring-2 focus:ring-accent-primary/50" />
+                      className="w-full px-3 py-2 bg-white dark:bg-fintech-card border border-slate-200 dark:border-white/10 rounded-lg text-sm text-slate-800 dark:text-txt-primary focus:ring-2 focus:ring-accent-primary/50" />
                   )}
                 </div>
               ))}
@@ -137,17 +137,17 @@ const ExpenseManager = ({ expenses, onDelete }) => {
 
       {filteredExpenses.length === 0 ? (
         <div className="text-center py-8">
-          <Search size={40} className="mx-auto text-txt-muted mb-3" />
-          <p className="text-txt-secondary">No expenses match your search</p>
-          <p className="text-sm text-txt-muted mt-1">Try adjusting your filters</p>
+          <Search size={40} className="mx-auto text-slate-400 dark:text-txt-muted mb-3" />
+          <p className="text-slate-600 dark:text-txt-secondary">No expenses match your search</p>
+          <p className="text-sm text-slate-400 dark:text-txt-muted mt-1">Try adjusting your filters</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="sticky top-0 bg-fintech-card z-10">
-              <tr className="border-b border-white/10">
+            <thead className="sticky top-0 bg-white dark:bg-fintech-card z-10">
+              <tr className="border-b border-slate-200 dark:border-white/10">
                 {['Date', 'Category', 'Type', 'Time', 'Description', 'Amount', 'Action'].map((h, i) => (
-                  <th key={h} className={`py-3 px-4 text-sm font-semibold text-txt-muted ${i === 5 ? 'text-right' : i === 6 ? 'text-center' : 'text-left'} ${i >= 2 && i <= 4 ? 'hidden ' + (i === 2 ? 'md:table-cell' : 'lg:table-cell') : ''}`}>{h}</th>
+                  <th key={h} className={`py-3 px-4 text-sm font-semibold text-slate-400 dark:text-txt-muted ${i === 5 ? 'text-right' : i === 6 ? 'text-center' : 'text-left'} ${i >= 2 && i <= 4 ? 'hidden ' + (i === 2 ? 'md:table-cell' : 'lg:table-cell') : ''}`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -155,12 +155,12 @@ const ExpenseManager = ({ expenses, onDelete }) => {
               {filteredExpenses.slice(0, 50).map((expense) => {
                 const type = expense.expense_type || getExpenseType(expense.category);
                 return (
-                  <tr key={expense.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="py-3 px-4 text-sm text-txt-secondary">{format(parseISO(expense.expense_date), 'MMM dd, yyyy')}</td>
+                  <tr key={expense.id} className="border-b border-slate-100 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                    <td className="py-3 px-4 text-sm text-slate-600 dark:text-txt-secondary">{format(parseISO(expense.expense_date), 'MMM dd, yyyy')}</td>
                     <td className="py-3 px-4">
                       <span className="inline-flex items-center">
                         <span className={`w-2 h-2 rounded-full ${getCategoryColor(expense.category)} mr-2`} />
-                        <span className="text-sm text-txt-secondary">{expense.category}</span>
+                        <span className="text-sm text-slate-600 dark:text-txt-secondary">{expense.category}</span>
                       </span>
                     </td>
                     <td className="py-3 px-4 hidden md:table-cell">
@@ -168,9 +168,9 @@ const ExpenseManager = ({ expenses, onDelete }) => {
                         {type === 'necessary' ? 'Necessary' : 'Luxury'}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-txt-muted hidden lg:table-cell">{expense.expense_time || '-'}</td>
-                    <td className="py-3 px-4 text-sm text-txt-muted hidden lg:table-cell max-w-[200px] truncate">{expense.description || '-'}</td>
-                    <td className="py-3 px-4 text-right"><span className="text-sm font-semibold text-txt-primary">₹{parseFloat(expense.amount).toFixed(2)}</span></td>
+                    <td className="py-3 px-4 text-sm text-slate-400 dark:text-txt-muted hidden lg:table-cell">{expense.expense_time || '-'}</td>
+                    <td className="py-3 px-4 text-sm text-slate-400 dark:text-txt-muted hidden lg:table-cell max-w-[200px] truncate">{expense.description || '-'}</td>
+                    <td className="py-3 px-4 text-right"><span className="text-sm font-semibold text-slate-800 dark:text-txt-primary">₹{parseFloat(expense.amount).toFixed(2)}</span></td>
                     <td className="py-3 px-4 text-center">
                       <button onClick={() => onDelete(expense.id)} className="text-accent-danger hover:text-accent-danger/80 transition-colors p-1 hover:bg-accent-danger/10 rounded-lg" title="Delete expense">
                         <Trash2 size={16} />
@@ -182,7 +182,7 @@ const ExpenseManager = ({ expenses, onDelete }) => {
             </tbody>
           </table>
           {filteredExpenses.length > 50 && (
-            <div className="text-center py-3 text-sm text-txt-muted">Showing 50 of {filteredExpenses.length} filtered expenses.</div>
+            <div className="text-center py-3 text-sm text-slate-400 dark:text-txt-muted">Showing 50 of {filteredExpenses.length} filtered expenses.</div>
           )}
         </div>
       )}

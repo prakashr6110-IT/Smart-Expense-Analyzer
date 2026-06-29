@@ -83,12 +83,12 @@ const TopStatsCards = ({ expenses, profile }) => {
     <div className="mb-6">
       {/* Spending summary banner */}
       {breakdown.total > 0 && (
-        <div className="glass rounded-2xl p-5 mb-5 border border-white/5">
+        <div className="glass rounded-2xl p-5 mb-5 border border-slate-200 dark:border-white/5">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-accent-primary/20 flex items-center justify-center flex-shrink-0">
               <TrendingUp size={18} className="text-accent-primary" />
             </div>
-            <p className="text-sm text-txt-secondary">
+            <p className="text-sm text-slate-600 dark:text-txt-secondary">
               This month:{' '}
               <span className="font-bold text-accent-success">
                 ₹{breakdown.necessary.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
@@ -101,7 +101,7 @@ const TopStatsCards = ({ expenses, profile }) => {
               {topCategory && (
                 <>
                   {' '}— Top:{' '}
-                  <span className="font-bold text-txt-primary">{topCategory[0]}</span>
+                  <span className="font-bold text-slate-800 dark:text-txt-primary">{topCategory[0]}</span>
                 </>
               )}
             </p>
@@ -114,19 +114,19 @@ const TopStatsCards = ({ expenses, profile }) => {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className={`card border-l-4 ${stat.accent} p-4 hover:shadow-glow-blue/20 animate-slide-in-up group`}
+            className={`card border-l-4 ${stat.accent} p-4 animate-slide-in-up group`}
             style={{ animationDelay: `${index * 0.05}s` }}
           >
             <div className="flex items-center gap-2 mb-3">
               <div className={`w-8 h-8 rounded-lg ${stat.iconBg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                 <stat.icon size={15} className={stat.iconColor} />
               </div>
-              <span className="text-[11px] font-semibold text-txt-muted uppercase tracking-wider">
+              <span className="text-[11px] font-semibold text-slate-400 dark:text-txt-muted uppercase tracking-wider">
                 {stat.label}
               </span>
             </div>
-            <p className="text-xl font-heading font-bold text-txt-primary">{stat.value}</p>
-            <p className="text-[11px] text-txt-muted mt-1.5">{stat.subtext}</p>
+            <p className="text-xl font-heading font-bold text-slate-800 dark:text-txt-primary">{stat.value}</p>
+            <p className="text-[11px] text-slate-400 dark:text-txt-muted mt-1.5">{stat.subtext}</p>
           </div>
         ))}
       </div>

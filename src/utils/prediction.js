@@ -105,13 +105,19 @@ export const calculateFinancialScore = (expenses, monthlyBudget = 10000) => {
     }
   });
 
-  // === CORE SCORE: Budget consumption ===
-  // Luxury counts 1.5x more than necessary
-  const effectiveSpent = necessarySpent + (luxurySpent * 1.5);
-  let score = 100 * (1 - effectiveSpent / monthlyBudget);
-  // score=100 when nothing spent, score=0 when budget exhausted, negative when over
+  // === CORE SCORE: Budget consumption (based on actual spending) ===
+  let score = 100 * (1 - totalSpent / monthlyBudget);
+  // score=100 when nothing spent, score=0 when budget fully spent, negative only if actual spending exceeds budget
 
-  // === BEHAVIOR PENALTIES (small additional deductions) ===
+  // === BEHAVIOR PENALTIES (additional deductions for poor spending habits) ===
+
+  // Luxury ratio penalty: high luxury spending reduces score
+  const luxuryRatio = totalSpent > 0 ? (luxurySpent / totalSpent) * 100 : 0;
+  if (luxuryRatio > 50) {
+    score -= 15; // More than half of spending is luxury
+  } else if (luxuryRatio > 30) {
+    score -= 8; // Significant luxury spending
+  }
 
   // Late-night luxury purchases penalty (extra -3 per late-night luxury item, max -15)
   if (lateNightLuxuryCount > 0) {
@@ -141,16 +147,12 @@ export const getScoreRating = (score) => {
 
 /**
  * Calculate detailed score breakdown for display
- * The breakdown MUST sum to the main calculateFinancialScore result
  * 
  * Score distribution (100 points total):
- * - Budget Adherence: Up to 50 points (based on budget consumption)
- * - Luxury Control: Up to 25 points (penalty for luxury ratio > 20%)
- * - Weekend Control: Up to 15 points (penalty for weekend luxury)
+ * - Budget Adherence: Up to 50 points (based on actual budget consumption)
+ * - Luxury Control: Up to 25 points (penalty for high luxury ratio)
+ * - Weekend Control: Up to 15 points (penalty for weekend/late-night luxury)
  * - Savings Potential: Up to 10 points (based on remaining budget)
- * 
- * Note: The main formula uses effectiveSpent = necessary + (luxury * 1.5)
- * This breakdown visualizes where the deductions come from.
  */
 export const calculateScoreBreakdown = (expenses, monthlyBudget = 10000) => {
   const defaultBreakdown = {
@@ -196,35 +198,26 @@ export const calculateScoreBreakdown = (expenses, monthlyBudget = 10000) => {
     }
   });
 
-  // === ALIGN WITH MAIN SCORE FORMULA ===
-  // Main formula: score = 100 * (1 - effectiveSpent / monthlyBudget) - penalties
-  // effectiveSpent = necessarySpent + (luxurySpent * 1.5)
-  
-  const effectiveSpent = necessarySpent + (luxurySpent * 1.5);
-  const budgetUsedRatio = monthlyBudget > 0 ? effectiveSpent / monthlyBudget : 0;
+  // === ALIGNED WITH MAIN SCORE FORMULA ===
+  // Main formula: score = 100 * (1 - totalSpent / monthlyBudget) - penalties
+  const budgetUsedRatio = monthlyBudget > 0 ? totalSpent / monthlyBudget : 0;
   
   // 1. Budget Adherence (50 points)
-  // This is the main factor - based on effective budget consumption
-  // Full 50 points when nothing spent, decreases as budget is used
+  // Based on actual spending vs budget
   let budgetAdherenceScore = 50 * (1 - Math.min(budgetUsedRatio, 1));
-  // Can go negative if over budget, but clamp for display
   budgetAdherenceScore = Math.max(0, budgetAdherenceScore);
 
   // 2. Luxury Control (25 points)
-  // The 1.5x multiplier impact: luxury spending hurts more
-  // Show deduction based on luxury ratio of total spending
+  // Based on luxury spending ratio of total
   const luxuryRatio = totalSpent > 0 ? luxurySpent / totalSpent : 0;
   let luxuryControlScore = 25;
-  if (luxuryRatio > 0.3) {
-    // Heavy luxury penalty: lose up to 25 points
-    luxuryControlScore = Math.max(0, 25 - (luxuryRatio - 0.3) * 50);
-  } else if (luxuryRatio > 0.15) {
-    // Moderate luxury: lose some points
-    luxuryControlScore = 25 - (luxuryRatio - 0.15) * 30;
+  if (luxuryRatio > 0.5) {
+    luxuryControlScore = Math.max(0, 25 - (luxuryRatio - 0.5) * 50);
+  } else if (luxuryRatio > 0.3) {
+    luxuryControlScore = 25 - (luxuryRatio - 0.3) * 40;
   }
 
-  // 3. Weekend Spending Control (15 points)
-  // Penalty for weekend and late-night luxury purchases
+  // 3. Weekend/Late-night Spending Control (15 points)
   let weekendControlScore = 15;
   const totalPenaltyCount = weekendLuxuryCount + lateNightLuxuryCount;
   if (totalPenaltyCount > 0) {
@@ -232,7 +225,6 @@ export const calculateScoreBreakdown = (expenses, monthlyBudget = 10000) => {
   }
 
   // 4. Savings Potential (10 points)
-  // Based on how much budget remains (actual, not effective)
   const remainingBudget = monthlyBudget - totalSpent;
   let savingsPotentialScore = 10;
   if (remainingBudget < 0) {

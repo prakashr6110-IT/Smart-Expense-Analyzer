@@ -11,7 +11,20 @@ export default {
         heading: ['Poppins', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
       },
+      fontSize: {
+        'display': ['48px', { fontWeight: '700', lineHeight: '1.2' }],
+        'h1': ['32px', { fontWeight: '600', lineHeight: '1.3' }],
+        'h2': ['24px', { fontWeight: '600', lineHeight: '1.3' }],
+        'h3': ['18px', { fontWeight: '500', lineHeight: '1.4' }],
+        'body': ['15px', { fontWeight: '400', lineHeight: '1.6' }],
+        'caption': ['12px', { fontWeight: '400', lineHeight: '1.5' }],
+      },
       colors: {
+        brand: {
+          teal: '#00C9A7',
+          purple: '#7C6FFF',
+          dark: '#0B1220',
+        },
         fintech: {
           bg: '#0B1220',
           secondary: '#111827',
@@ -19,12 +32,12 @@ export default {
           sidebar: '#0F172A',
         },
         accent: {
-          primary: '#3B82F6',
+          primary: '#00C9A7',
           success: '#10B981',
           warning: '#F59E0B',
           danger: '#EF4444',
-          insights: '#8B5CF6',
-          prediction: '#06B6D4',
+          insights: '#7C6FFF',
+          prediction: '#00C9A7',
         },
         txt: {
           primary: '#F8FAFC',

@@ -1,6 +1,8 @@
 import { Lightbulb, Clock, TrendingUp, TrendingDown, Calendar, AlertTriangle, ShoppingBag, Coffee } from 'lucide-react';
 import { startOfMonth, subMonths, format, parseISO, getDay } from 'date-fns';
 import { getExpenseType } from '../../utils/categoryClassification';
+import InsightCard from '../UI/InsightCard';
+import Card from '../UI/Card';
 
 const BehaviorInsights = ({ expenses, profile }) => {
   const monthlyBudget = profile?.monthly_budget ? parseFloat(profile.monthly_budget) : 10000;
@@ -8,58 +10,50 @@ const BehaviorInsights = ({ expenses, profile }) => {
 
   if (insights.length === 0) {
     return (
-      <div className="card">
+      <Card>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-accent-warning/20 flex items-center justify-center">
             <Lightbulb size={20} className="text-accent-warning" />
           </div>
-          <h3 className="text-lg font-heading font-semibold text-txt-primary">Behavior Insights</h3>
+          <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary">Behavior Insights</h3>
         </div>
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-4">
-            <Lightbulb size={28} className="text-txt-muted" />
+            <Lightbulb size={28} className="text-slate-400 dark:text-txt-muted" />
           </div>
-          <p className="text-txt-secondary font-medium">
+          <p className="text-slate-600 dark:text-txt-secondary font-medium">
             Add more expenses to unlock personalized insights
           </p>
-          <p className="text-sm text-txt-muted mt-1.5">
+          <p className="text-sm text-slate-400 dark:text-txt-muted mt-1.5">
             We need at least a few transactions to analyze your spending patterns
           </p>
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="card">
+    <div>
       <div className="flex items-center gap-3 mb-5">
         <div className="w-10 h-10 rounded-xl bg-accent-warning/20 flex items-center justify-center">
           <Lightbulb size={20} className="text-accent-warning" />
         </div>
-        <h3 className="text-lg font-heading font-semibold text-txt-primary">Behavior Insights</h3>
+        <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary">Behavior Insights</h3>
         <span className="text-xs bg-accent-warning/20 text-accent-warning px-2.5 py-1 rounded-full font-semibold">
           {insights.length} insights
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {insights.map((insight, index) => (
-          <div
+          <InsightCard
             key={index}
-            className={`flex items-start gap-3 p-4 rounded-xl border ${getInsightStyles(insight.type)} transition-all duration-300 hover:scale-[1.01]`}
-          >
-            <div className={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center ${getIconBg(insight.type)}`}>
-              <insight.icon size={16} className={getIconColor(insight.type)} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-txt-primary">
-                {insight.title}
-              </p>
-              <p className="text-xs text-txt-muted mt-1">
-                {insight.description}
-              </p>
-            </div>
-          </div>
+            title={insight.title}
+            description={insight.description}
+            category={getCategoryFromType(insight.type)}
+            icon={insight.icon}
+            delay={index * 80}
+          />
         ))}
       </div>
     </div>
@@ -266,42 +260,16 @@ const generateInsights = (expenses, monthlyBudget) => {
   return insights.slice(0, 6);
 };
 
-const getInsightStyles = (type) => {
+// Map insight types to InsightCard categories
+const getCategoryFromType = (type) => {
   switch (type) {
-    case 'positive':
-      return 'bg-accent-success/5 border-accent-success/20';
     case 'warning':
-      return 'bg-accent-warning/5 border-accent-warning/20';
     case 'danger':
-      return 'bg-accent-danger/5 border-accent-danger/20';
-    default:
-      return 'bg-accent-primary/5 border-accent-primary/20';
-  }
-};
-
-const getIconBg = (type) => {
-  switch (type) {
+      return 'warning';
     case 'positive':
-      return 'bg-accent-success/20';
-    case 'warning':
-      return 'bg-accent-warning/20';
-    case 'danger':
-      return 'bg-accent-danger/20';
+      return 'suggestion';
     default:
-      return 'bg-accent-primary/20';
-  }
-};
-
-const getIconColor = (type) => {
-  switch (type) {
-    case 'positive':
-      return 'text-accent-success';
-    case 'warning':
-      return 'text-accent-warning';
-    case 'danger':
-      return 'text-accent-danger';
-    default:
-      return 'text-accent-primary';
+      return 'pattern';
   }
 };
 

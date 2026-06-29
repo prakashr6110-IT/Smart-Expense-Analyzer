@@ -13,16 +13,16 @@ const SpendingStreaks = ({ expenses, profile }) => {
           <div className="w-10 h-10 rounded-xl bg-accent-warning/20 flex items-center justify-center">
             <Trophy size={20} className="text-accent-warning" />
           </div>
-          <h3 className="text-lg font-heading font-bold text-txt-primary">Spending Streaks</h3>
+          <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">Spending Streaks</h3>
         </div>
         <div className="flex flex-col items-center justify-center py-8 text-center">
-          <div className="w-16 h-16 bg-fintech-secondary rounded-2xl flex items-center justify-center mb-4 border border-white/5">
-            <Trophy size={28} className="text-txt-muted" />
+          <div className="w-16 h-16 bg-slate-200 dark:bg-fintech-secondary rounded-2xl flex items-center justify-center mb-4 border border-slate-200 dark:border-white/5">
+            <Trophy size={28} className="text-slate-400 dark:text-txt-muted" />
           </div>
-          <p className="text-txt-secondary font-medium">
+          <p className="text-slate-600 dark:text-txt-secondary font-medium">
             Start tracking to earn achievements
           </p>
-          <p className="text-sm text-txt-muted mt-1">
+          <p className="text-sm text-slate-400 dark:text-txt-muted mt-1">
             Your spending milestones will appear here
           </p>
         </div>
@@ -56,10 +56,10 @@ const SpendingStreaks = ({ expenses, profile }) => {
                 <achievement.icon size={20} className={getAchievementIconColor(achievement.tier)} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-txt-primary">
+                <p className="text-sm font-bold text-slate-800 dark:text-txt-primary">
                   {achievement.emoji} {achievement.title}
                 </p>
-                <p className="text-xs text-txt-muted mt-0.5">
+                <p className="text-xs text-slate-400 dark:text-txt-muted mt-0.5">
                   {achievement.description}
                 </p>
                 {achievement.value && (

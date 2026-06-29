@@ -75,11 +75,11 @@ const DashboardHero = ({ user, profile, expenses }) => {
               />
             </div>
             <div>
-              <p className="text-slate-400 dark:text-txt-muted text-sm font-medium">Welcome back,</p>
-              <h1 className="text-2xl sm:text-3xl font-heading font-bold text-slate-800 dark:text-txt-primary mt-0.5">
+              <p className="text-txt-muted text-sm font-medium">Welcome back,</p>
+              <h1 className="text-2xl sm:text-3xl font-heading font-bold text-txt-primary mt-0.5">
                 {firstName}
               </h1>
-              <p className="text-slate-400 dark:text-txt-muted text-xs mt-1.5">{format(now, 'EEEE, MMMM d, yyyy')}</p>
+              <p className="text-txt-muted text-xs mt-1.5">{format(now, 'EEEE, MMMM d, yyyy')}</p>
             </div>
           </div>
 
@@ -87,7 +87,7 @@ const DashboardHero = ({ user, profile, expenses }) => {
           <div className="hidden sm:flex flex-col items-center">
             <div className="relative w-24 h-24">
               <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r={radius} fill="none" stroke="currentColor" className="text-slate-200 dark:text-white/5" strokeWidth="8" />
+                <circle cx="50" cy="50" r={radius} fill="none" stroke="currentColor" className="text-white/5" strokeWidth="8" />
                 <circle
                   cx="50" cy="50" r={radius} fill="none"
                   stroke={getScoreStroke()}
@@ -99,23 +99,23 @@ const DashboardHero = ({ user, profile, expenses }) => {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-xl font-heading font-bold text-slate-800 dark:text-txt-primary">{Math.round(score)}</span>
-                <span className="text-[10px] text-slate-400 dark:text-txt-muted">/100</span>
+                <span className="text-xl font-heading font-bold text-txt-primary">{Math.round(score)}</span>
+                <span className="text-[10px] text-txt-muted">/100</span>
               </div>
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-txt-muted mt-1.5 font-medium">{rating.text}</p>
+            <p className="text-[11px] text-txt-muted mt-1.5 font-medium">{rating.text}</p>
           </div>
         </div>
 
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {/* Total Spent */}
-          <div className="glass rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 group">
+          <div className="glass rounded-2xl p-4 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300 group">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl bg-accent-primary/20 flex items-center justify-center group-hover:bg-accent-primary/30 transition-colors">
                 <IndianRupee size={15} className="text-accent-primary" />
               </div>
-              <span className="text-[11px] font-semibold text-slate-400 dark:text-txt-muted uppercase tracking-wider">Spent</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Spent</span>
             </div>
             <p className="text-xl sm:text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">
               ₹{totalSpent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
@@ -131,30 +131,30 @@ const DashboardHero = ({ user, profile, expenses }) => {
                   <span className={`text-[11px] font-semibold ${isUp ? 'text-accent-danger' : 'text-accent-success'}`}>
                     {Math.abs(trendPct).toFixed(0)}%
                   </span>
-                  <span className="text-[10px] text-slate-400 dark:text-txt-muted ml-0.5">vs last month</span>
+                  <span className="text-[10px] text-slate-500 dark:text-txt-muted ml-0.5">vs last month</span>
                 </>
               )}
             </div>
           </div>
 
           {/* Budget */}
-          <div className="glass rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 group">
+          <div className="glass rounded-2xl p-4 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300 group">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl bg-accent-insights/20 flex items-center justify-center group-hover:bg-accent-insights/30 transition-colors">
                 <Wallet size={15} className="text-accent-insights" />
               </div>
-              <span className="text-[11px] font-semibold text-slate-400 dark:text-txt-muted uppercase tracking-wider">Budget</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Budget</span>
             </div>
             <p className="text-xl sm:text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">
               {budget > 0 ? `₹${budget.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : 'Not Set'}
             </p>
             {budget > 0 && (
               <div className="mt-3">
-                <div className="flex justify-between text-[10px] text-slate-400 dark:text-txt-muted mb-1.5">
+                <div className="flex justify-between text-[10px] text-slate-500 dark:text-txt-muted mb-1.5">
                   <span>{budgetUsed.toFixed(0)}% used</span>
                   <span>₹{Math.max(0, remaining).toLocaleString('en-IN', { maximumFractionDigits: 0 })} left</span>
                 </div>
-                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full bg-gradient-to-r ${getBudgetColor()} transition-all duration-700 shadow-lg`}
                     style={{ width: `${Math.min(budgetUsed, 100)}%` }}
@@ -165,41 +165,41 @@ const DashboardHero = ({ user, profile, expenses }) => {
           </div>
 
           {/* Transactions */}
-          <div className="glass rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 group">
+          <div className="glass rounded-2xl p-4 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300 group">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl bg-accent-prediction/20 flex items-center justify-center group-hover:bg-accent-prediction/30 transition-colors">
                 <TrendingUp size={15} className="text-accent-prediction" />
               </div>
-              <span className="text-[11px] font-semibold text-slate-400 dark:text-txt-muted uppercase tracking-wider">Txns</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Txns</span>
             </div>
             <p className="text-xl sm:text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">{monthExpenses.length}</p>
-            <p className="text-[11px] text-slate-400 dark:text-txt-muted mt-2">this month</p>
+            <p className="text-[11px] text-slate-500 dark:text-txt-muted mt-2">this month</p>
           </div>
 
           {/* Score (mobile) */}
-          <div className="sm:hidden glass rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 group">
+          <div className="sm:hidden glass rounded-2xl p-4 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300 group">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl bg-accent-danger/20 flex items-center justify-center group-hover:bg-accent-danger/30 transition-colors">
                 <Heart size={15} className="text-accent-danger" fill="currentColor" />
               </div>
-              <span className="text-[11px] font-semibold text-slate-400 dark:text-txt-muted uppercase tracking-wider">Score</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Score</span>
             </div>
             <p className="text-xl font-heading font-bold" style={{ color: getScoreStroke() }}>{Math.round(score)}</p>
-            <p className="text-[11px] text-slate-400 dark:text-txt-muted mt-2">{rating.text}</p>
+            <p className="text-[11px] text-slate-500 dark:text-txt-muted mt-2">{rating.text}</p>
           </div>
 
           {/* Avg per expense (desktop) */}
-          <div className="hidden sm:block glass rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 group">
+          <div className="hidden sm:block glass rounded-2xl p-4 hover:bg-slate-200 dark:hover:bg-white/10 transition-all duration-300 group">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 rounded-xl bg-accent-warning/20 flex items-center justify-center group-hover:bg-accent-warning/30 transition-colors">
                 <IndianRupee size={15} className="text-accent-warning" />
               </div>
-              <span className="text-[11px] font-semibold text-slate-400 dark:text-txt-muted uppercase tracking-wider">Avg/Expense</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Avg/Expense</span>
             </div>
             <p className="text-xl sm:text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">
               ₹{monthExpenses.length > 0 ? (totalSpent / monthExpenses.length).toLocaleString('en-IN', { maximumFractionDigits: 0 }) : '0'}
             </p>
-            <p className="text-[11px] text-slate-400 dark:text-txt-muted mt-2">per transaction</p>
+            <p className="text-[11px] text-slate-500 dark:text-txt-muted mt-2">per transaction</p>
           </div>
         </div>
       </div>

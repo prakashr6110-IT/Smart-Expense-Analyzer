@@ -66,13 +66,24 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
 
     let healthScore = 100;
     if (monthlyBudget > 0) {
-      if (usedPct > 100) healthScore -= 40;
+      // Budget exhaustion penalties (much more aggressive)
+      if (usedPct > 150) healthScore -= 75;
+      else if (usedPct > 120) healthScore -= 65;
+      else if (usedPct > 100) healthScore -= 55;
+      else if (usedPct > 90) healthScore -= 35;
       else if (usedPct > 80) healthScore -= 20;
       else if (usedPct > 60) healthScore -= 10;
+      // Additional penalty when almost no budget remains
+      const remainingPct = ((monthlyBudget - totalSpent) / monthlyBudget) * 100;
+      if (remainingPct <= 0) healthScore -= 15;
+      else if (remainingPct <= 10) healthScore -= 10;
+      // Luxury ratio penalty
       if (luxuryRatio > 50) healthScore -= 20;
       else if (luxuryRatio > 30) healthScore -= 10;
+      // Projected overspend penalty
       if (projectedMonthEnd > monthlyBudget * 1.2) healthScore -= 15;
       else if (projectedMonthEnd > monthlyBudget) healthScore -= 8;
+      // Daily average too high
       if (dailyAvg > monthlyBudget / 30 * 2) healthScore -= 10;
     }
     if (monthlyExpenses.length === 0) healthScore = 75;
@@ -133,8 +144,8 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
           <Brain size={18} className="text-white" />
         </div>
         <div>
-          <h3 className="text-lg font-heading font-bold text-txt-primary">Smart Insights</h3>
-          <p className="text-xs text-txt-muted">AI-powered spending analytics</p>
+          <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">Smart Insights</h3>
+          <p className="text-xs text-slate-400 dark:text-txt-muted">AI-powered spending analytics</p>
         </div>
       </div>
 
@@ -144,25 +155,25 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
           <div className="w-8 h-8 rounded-lg bg-accent-primary/20 flex items-center justify-center">
             <Wallet size={16} className="text-accent-primary" />
           </div>
-          <span className="text-sm font-semibold text-txt-primary">Budget Status</span>
+          <span className="text-sm font-semibold text-slate-800 dark:text-txt-primary">Budget Status</span>
         </div>
         <div className="flex justify-between items-end mb-3">
           <div>
-            <p className="text-2xl font-bold text-txt-primary">₹{remaining.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
-            <p className="text-xs text-txt-muted mt-0.5">Remaining of ₹{monthlyBudget.toLocaleString('en-IN')}</p>
+            <p className="text-2xl font-bold text-slate-800 dark:text-txt-primary">₹{remaining.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+            <p className="text-xs text-slate-400 dark:text-txt-muted mt-0.5">Remaining of ₹{monthlyBudget.toLocaleString('en-IN')}</p>
           </div>
           <div className="text-right">
             <span className={`text-lg font-bold ${usedPct >= 90 ? 'text-accent-danger' : usedPct >= 75 ? 'text-accent-warning' : 'text-accent-success'}`}>{usedPct}%</span>
-            <p className="text-xs text-txt-muted">used</p>
+            <p className="text-xs text-slate-400 dark:text-txt-muted">used</p>
           </div>
         </div>
-        <div className="w-full h-3 bg-fintech-secondary rounded-full overflow-hidden">
+        <div className="w-full h-3 bg-slate-200 dark:bg-fintech-secondary rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-700 ${usedPct >= 90 ? 'bg-gradient-to-r from-accent-danger to-rose-400' : usedPct >= 75 ? 'bg-gradient-to-r from-accent-warning to-orange-400' : 'bg-gradient-to-r from-accent-success to-emerald-400'}`}
             style={{ width: `${Math.min(100, usedPct)}%` }}
           />
         </div>
-        <div className="flex justify-between text-xs text-txt-muted mt-1.5">
+        <div className="flex justify-between text-xs text-slate-400 dark:text-txt-muted mt-1.5">
           <span>Spent: ₹{totalSpent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
           <span>Necessary: ₹{analytics.necessarySpent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
           <span>Luxury: ₹{analytics.luxurySpent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
@@ -175,7 +186,7 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
           <div className="w-8 h-8 rounded-lg bg-accent-warning/20 flex items-center justify-center">
             <AlertTriangle size={16} className="text-accent-warning" />
           </div>
-          <span className="text-sm font-semibold text-txt-primary">Smart Warnings</span>
+          <span className="text-sm font-semibold text-slate-800 dark:text-txt-primary">Smart Warnings</span>
         </div>
         <div className="space-y-2">
           {warnings.map((w, i) => (
@@ -198,11 +209,11 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
           <div className="w-8 h-8 rounded-lg bg-accent-insights/20 flex items-center justify-center">
             <PieChart size={16} className="text-accent-insights" />
           </div>
-          <span className="text-sm font-semibold text-txt-primary">Top Categories</span>
-          <span className="text-xs text-txt-muted ml-auto">This month</span>
+          <span className="text-sm font-semibold text-slate-800 dark:text-txt-primary">Top Categories</span>
+          <span className="text-xs text-slate-400 dark:text-txt-muted ml-auto">This month</span>
         </div>
         {topCategories.length === 0 ? (
-          <p className="text-xs text-txt-muted text-center py-3">No spending data yet</p>
+          <p className="text-xs text-slate-400 dark:text-txt-muted text-center py-3">No spending data yet</p>
         ) : (
           <div className="space-y-2.5">
             {topCategories.map(([cat, amount]) => {
@@ -210,10 +221,10 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
               return (
                 <div key={cat}>
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="font-medium text-txt-secondary">{cat}</span>
-                    <span className="text-txt-muted">₹{amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })} ({pct}%)</span>
+                    <span className="font-medium text-slate-600 dark:text-txt-secondary">{cat}</span>
+                    <span className="text-slate-400 dark:text-txt-muted">₹{amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })} ({pct}%)</span>
                   </div>
-                  <div className="w-full h-1.5 bg-fintech-secondary rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-slate-200 dark:bg-fintech-secondary rounded-full overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-accent-insights to-accent-prediction rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -229,20 +240,20 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
           <div className="w-8 h-8 rounded-lg bg-accent-prediction/20 flex items-center justify-center">
             <Activity size={16} className="text-accent-prediction" />
           </div>
-          <span className="text-sm font-semibold text-txt-primary">Spending Frequency</span>
+          <span className="text-sm font-semibold text-slate-800 dark:text-txt-primary">Spending Frequency</span>
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div className="text-center p-2.5 bg-accent-prediction/10 rounded-xl border border-accent-prediction/20">
             <p className="text-lg font-bold text-accent-prediction">{txnCount}</p>
-            <p className="text-[10px] text-txt-muted font-medium">Transactions</p>
+            <p className="text-[10px] text-slate-400 dark:text-txt-muted font-medium">Transactions</p>
           </div>
           <div className="text-center p-2.5 bg-accent-prediction/10 rounded-xl border border-accent-prediction/20">
             <p className="text-lg font-bold text-accent-prediction">₹{avgPerTxn.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
-            <p className="text-[10px] text-txt-muted font-medium">Avg/Txn</p>
+            <p className="text-[10px] text-slate-400 dark:text-txt-muted font-medium">Avg/Txn</p>
           </div>
           <div className="text-center p-2.5 bg-accent-prediction/10 rounded-xl border border-accent-prediction/20">
             <p className="text-lg font-bold text-accent-prediction">{(analytics.txnsPerDay).toFixed(1)}</p>
-            <p className="text-[10px] text-txt-muted font-medium">Txns/Day</p>
+            <p className="text-[10px] text-slate-400 dark:text-txt-muted font-medium">Txns/Day</p>
           </div>
         </div>
       </div>
@@ -254,21 +265,21 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
             <div className="w-8 h-8 rounded-lg bg-accent-primary/20 flex items-center justify-center">
               <Zap size={16} className="text-accent-primary" />
             </div>
-            <span className="text-sm font-semibold text-txt-primary">Expense Impact</span>
+            <span className="text-sm font-semibold text-slate-800 dark:text-txt-primary">Expense Impact</span>
           </div>
           <div className="space-y-2.5">
             <div className="flex justify-between text-sm">
-              <span className="text-txt-muted">Adding this expense</span>
-              <span className="font-bold text-txt-primary">₹{amt.toLocaleString('en-IN')}</span>
+              <span className="text-slate-400 dark:text-txt-muted">Adding this expense</span>
+              <span className="font-bold text-slate-800 dark:text-txt-primary">₹{amt.toLocaleString('en-IN')}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-txt-muted">Budget after</span>
-              <span className={`font-bold ${newRemaining === 0 ? 'text-accent-danger' : 'text-txt-primary'}`}>
+              <span className="text-slate-400 dark:text-txt-muted">Budget after</span>
+              <span className={`font-bold ${newRemaining === 0 ? 'text-accent-danger' : 'text-slate-800 dark:text-txt-primary'}`}>
                 ₹{newRemaining.toLocaleString('en-IN', { maximumFractionDigits: 0 })} left
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-txt-muted">Usage after</span>
+              <span className="text-slate-400 dark:text-txt-muted">Usage after</span>
               <span className={`font-bold ${newUsedPct >= 90 ? 'text-accent-danger' : newUsedPct >= 75 ? 'text-accent-warning' : 'text-accent-success'}`}>
                 {newUsedPct}%
               </span>
@@ -294,17 +305,17 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
           <div className="w-8 h-8 rounded-lg bg-accent-success/20 flex items-center justify-center">
             <Heart size={16} className={getScoreStroke()} />
           </div>
-          <span className="text-sm font-semibold text-txt-primary">Health Score</span>
+          <span className="text-sm font-semibold text-slate-800 dark:text-txt-primary">Health Score</span>
         </div>
         <div className="flex items-center gap-4">
           <div className="relative w-16 h-16 flex-shrink-0">
             <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
-              <circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" strokeWidth="5" className="text-white/5" />
+              <circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" strokeWidth="5" className="text-slate-200 dark:text-white/5" />
               <circle cx="32" cy="32" r="28" fill="none" strokeWidth="5" strokeLinecap="round"
                 strokeDasharray={`${(healthScore / 100) * 176} 176`}
                 className={getScoreStroke()}
                 stroke="currentColor"
-                style={{ filter: 'drop-shadow(0 0 6px currentColor)' }}
+                
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
@@ -317,7 +328,7 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
             <p className={`text-base font-bold ${getScoreText()}`}>
               {scoreLabel}
             </p>
-            <p className="text-xs text-txt-muted mt-0.5">Based on spending patterns, luxury ratio, and budget adherence</p>
+            <p className="text-xs text-slate-400 dark:text-txt-muted mt-0.5">Based on spending patterns, luxury ratio, and budget adherence</p>
           </div>
         </div>
       </div>
@@ -328,17 +339,17 @@ const SmartInsightsPanel = ({ pendingAmount = 0, pendingCategory = '', pendingTy
           <div className="w-8 h-8 rounded-lg bg-accent-success/20 flex items-center justify-center">
             <Target size={16} className="text-accent-success" />
           </div>
-          <span className="text-sm font-semibold text-txt-primary">Savings Goal</span>
-          <span className="text-[10px] text-txt-muted ml-auto">20% of budget</span>
+          <span className="text-sm font-semibold text-slate-800 dark:text-txt-primary">Savings Goal</span>
+          <span className="text-[10px] text-slate-400 dark:text-txt-muted ml-auto">20% of budget</span>
         </div>
         <div className="flex justify-between items-end mb-2">
           <div>
-            <p className="text-lg font-bold text-txt-primary">₹{actualSavings.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
-            <p className="text-xs text-txt-muted">of ₹{savingsTarget.toLocaleString('en-IN', { maximumFractionDigits: 0 })} target</p>
+            <p className="text-lg font-bold text-slate-800 dark:text-txt-primary">₹{actualSavings.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+            <p className="text-xs text-slate-400 dark:text-txt-muted">of ₹{savingsTarget.toLocaleString('en-IN', { maximumFractionDigits: 0 })} target</p>
           </div>
           <span className={`text-sm font-bold ${savingsPct >= 100 ? 'text-accent-success' : savingsPct >= 50 ? 'text-accent-primary' : 'text-accent-warning'}`}>{savingsPct}%</span>
         </div>
-        <div className="w-full h-2.5 bg-fintech-secondary rounded-full overflow-hidden">
+        <div className="w-full h-2.5 bg-slate-200 dark:bg-fintech-secondary rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-700 ${savingsPct >= 100 ? 'bg-gradient-to-r from-accent-success to-emerald-400' : savingsPct >= 50 ? 'bg-gradient-to-r from-accent-primary to-cyan-400' : 'bg-gradient-to-r from-accent-warning to-orange-400'}`}
             style={{ width: `${Math.min(100, savingsPct)}%` }}

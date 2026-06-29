@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useExpenses } from '../context/ExpenseContext';
-import Sidebar from '../components/Layout/Sidebar';
-import TopBar from '../components/Layout/TopBar';
+import Navbar from '../components/Layout/Navbar';
+import Footer from '../components/UI/Footer';
 import ExpenseManager from '../components/Dashboard/ExpenseManager';
 
 const Expenses = () => {
@@ -21,25 +21,23 @@ const Expenses = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-fintech-bg flex items-center justify-center">
-        <p className="text-txt-secondary">Loading...</p>
+      <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg flex items-center justify-center">
+        <p className="text-slate-600 dark:text-txt-secondary">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-fintech-bg transition-colors duration-300">
-      <Sidebar />
-      <div className="lg:ml-64">
-        <TopBar />
-        <main className="p-4 md:p-6 animate-fade-in">
+    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
+      <Navbar />
+      <main className="p-4 md:p-6 lg:p-8 animate-fade-in">
           <div className="mb-6">
-            <h2 className="text-2xl font-heading font-bold text-txt-primary">All Expenses</h2>
-            <p className="text-sm text-txt-muted mt-1">Search, filter, and manage all your transactions</p>
+            <h2 className="text-h1 font-heading text-slate-800 dark:text-txt-primary">All Expenses</h2>
+            <p className="text-sm text-slate-400 dark:text-txt-muted mt-1">Search, filter, and manage all your transactions</p>
           </div>
           <ExpenseManager expenses={expenses} onDelete={handleDeleteExpense} />
         </main>
-      </div>
+        <Footer />
     </div>
   );
 };

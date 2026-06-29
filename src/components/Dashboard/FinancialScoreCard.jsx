@@ -59,7 +59,7 @@ const FinancialScoreCard = ({ expenses, profile, predictions }) => {
                 cy="65"
                 r={radius}
                 fill="none"
-                className="stroke-white/5"
+                className="stroke-slate-200 dark:stroke-white/5"
                 strokeWidth="10"
               />
               {/* Progress circle */}
@@ -112,7 +112,7 @@ const FinancialScoreCard = ({ expenses, profile, predictions }) => {
                       {item.score}/{item.max}
                     </span>
                   </div>
-                  <div className="h-2 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         item.score === item.max ? 'bg-gradient-to-r from-accent-success to-emerald-400' : 

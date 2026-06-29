@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useExpenses } from '../context/ExpenseContext';
-import Sidebar from '../components/Layout/Sidebar';
-import TopBar from '../components/Layout/TopBar';
+import Navbar from '../components/Layout/Navbar';
+import Footer from '../components/UI/Footer';
 import { generateReport, generateCSV } from '../utils/reportGenerator';
 import { calculateFinancialScore, getScoreRating, predictNextMonthExpense, calculateBudgetExhaustionForecast } from '../utils/prediction';
 import { getSpendingBreakdown } from '../utils/categoryClassification';
@@ -61,24 +61,21 @@ const Reports = () => {
   const breakdown = getSpendingBreakdown(expenses.filter(exp => { const now = new Date(); const expDate = parseISO(exp.expense_date); return expDate >= startOfMonth(now) && expDate <= endOfMonth(now); }));
 
   if (loading) {
-    return (<div className="min-h-screen bg-fintech-bg flex items-center justify-center"><p className="text-txt-secondary">Loading...</p></div>);
+    return (<div className="min-h-screen bg-slate-100 dark:bg-fintech-bg flex items-center justify-center"><p className="text-slate-600 dark:text-txt-secondary">Loading...</p></div>);
   }
 
   return (
-    <div className="min-h-screen bg-fintech-bg transition-colors duration-300">
-      <Sidebar />
-      <div className="lg:ml-64">
-        <TopBar />
-        <main className="p-6 animate-fade-in">
-          <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
+      <Navbar />
+      <main className="p-4 md:p-6 lg:p-8 animate-fade-in">
             {/* Header */}
             <div className="flex items-center gap-3 mb-6 animate-slide-in-up">
               <div className="w-12 h-12 rounded-xl bg-accent-primary/20 flex items-center justify-center">
                 <FileDown size={24} className="text-accent-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-heading font-bold text-txt-primary">Reports</h2>
-                <p className="text-sm text-txt-muted">Generate professional reports of your expenses</p>
+                <h2 className="text-h1 font-heading text-slate-800 dark:text-txt-primary">Reports</h2>
+                <p className="text-sm text-slate-400 dark:text-txt-muted">Generate professional reports of your expenses</p>
               </div>
             </div>
 
@@ -101,16 +98,16 @@ const Reports = () => {
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${period.color} flex items-center justify-center mb-3`}>
                       <Icon size={24} className="text-white" />
                     </div>
-                    <h3 className="text-lg font-heading font-bold text-txt-primary">{period.label}</h3>
-                    <p className="text-sm text-txt-muted mt-1">{period.description}</p>
-                    <div className="mt-4 p-3 rounded-xl bg-fintech-secondary border border-white/5">
+                    <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">{period.label}</h3>
+                    <p className="text-sm text-slate-400 dark:text-txt-muted mt-1">{period.description}</p>
+                    <div className="mt-4 p-3 rounded-xl bg-slate-200 dark:bg-fintech-secondary border border-slate-200 dark:border-white/5">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-txt-muted">Total</span>
-                        <span className="text-lg font-bold text-txt-primary">₹{stats.total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                        <span className="text-sm text-slate-400 dark:text-txt-muted">Total</span>
+                        <span className="text-lg font-bold text-slate-800 dark:text-txt-primary">₹{stats.total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                       </div>
                       <div className="flex items-center justify-between mt-1">
-                        <span className="text-xs text-txt-muted">{stats.count} transactions</span>
-                        <span className="text-xs text-txt-muted">{stats.categoryCount} categories</span>
+                        <span className="text-xs text-slate-400 dark:text-txt-muted">{stats.count} transactions</span>
+                        <span className="text-xs text-slate-400 dark:text-txt-muted">{stats.categoryCount} categories</span>
                       </div>
                     </div>
                     {isSelected && (
@@ -125,7 +122,7 @@ const Reports = () => {
 
             {/* Report Preview */}
             <div className="card mb-6 animate-slide-in-up" style={{ animationDelay: '0.3s' }}>
-              <h3 className="text-lg font-heading font-bold text-txt-primary mb-4 flex items-center gap-2">
+              <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary mb-4 flex items-center gap-2">
                 <BarChart3 size={20} className="text-accent-primary" /> Report Preview
               </h3>
 
@@ -136,11 +133,11 @@ const Reports = () => {
                   { icon: Tag, label: 'Top Category', value: currentStats.topCategory, size: 'text-sm font-semibold', extra: currentStats.topCategoryAmount > 0 ? ` (₹${currentStats.topCategoryAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })})` : '' },
                   { icon: TrendingUp, label: 'Transactions', value: `${currentStats.count} expenses`, size: 'text-sm font-semibold' },
                 ].map((item, i) => (
-                  <div key={i} className="bg-fintech-secondary rounded-xl p-3 border border-white/5">
-                    <div className="flex items-center text-txt-muted text-xs mb-1 gap-1">
+                  <div key={i} className="bg-slate-200 dark:bg-fintech-secondary rounded-xl p-3 border border-slate-200 dark:border-white/5">
+                    <div className="flex items-center text-slate-400 dark:text-txt-muted text-xs mb-1 gap-1">
                       <item.icon size={12} /> {item.label}
                     </div>
-                    <p className={`${item.size} text-txt-primary`}>{item.value}{item.extra && <span className="text-xs text-txt-muted ml-1">{item.extra}</span>}</p>
+                    <p className={`${item.size} text-slate-800 dark:text-txt-primary`}>{item.value}{item.extra && <span className="text-xs text-slate-400 dark:text-txt-muted ml-1">{item.extra}</span>}</p>
                   </div>
                 ))}
               </div>
@@ -151,15 +148,15 @@ const Reports = () => {
                   <div className="flex items-center gap-3">
                     <Award size={20} className="text-accent-primary" />
                     <div>
-                      <p className="text-sm font-bold text-txt-primary">Financial Health Score</p>
+                      <p className="text-sm font-bold text-slate-800 dark:text-txt-primary">Financial Health Score</p>
                       <p className={`text-xs font-medium ${financialScore >= 70 ? 'text-accent-success' : financialScore >= 50 ? 'text-accent-warning' : 'text-accent-danger'}`}>
                         {scoreRating.emoji} {scoreRating.text}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-txt-primary">{Math.round(financialScore)}</p>
-                    <p className="text-xs text-txt-muted">/ 100</p>
+                    <p className="text-2xl font-bold text-slate-800 dark:text-txt-primary">{Math.round(financialScore)}</p>
+                    <p className="text-xs text-slate-400 dark:text-txt-muted">/ 100</p>
                   </div>
                 </div>
               </div>
@@ -172,16 +169,16 @@ const Reports = () => {
                       <Shield size={14} className="text-accent-success" />
                       <span className="text-xs font-medium text-accent-success">Necessary</span>
                     </div>
-                    <p className="text-lg font-bold text-txt-primary">₹{breakdown.necessary.toFixed(0)}</p>
-                    <p className="text-xs text-txt-muted">{breakdown.necessaryPct.toFixed(1)}%</p>
+                    <p className="text-lg font-bold text-slate-800 dark:text-txt-primary">₹{breakdown.necessary.toFixed(0)}</p>
+                    <p className="text-xs text-slate-400 dark:text-txt-muted">{breakdown.necessaryPct.toFixed(1)}%</p>
                   </div>
                   <div className="bg-accent-insights/5 rounded-xl p-3 border-l-4 border-accent-insights">
                     <div className="flex items-center gap-2 mb-1">
                       <Gem size={14} className="text-accent-insights" />
                       <span className="text-xs font-medium text-accent-insights">Luxury</span>
                     </div>
-                    <p className="text-lg font-bold text-txt-primary">₹{breakdown.luxury.toFixed(0)}</p>
-                    <p className="text-xs text-txt-muted">{breakdown.luxuryPct.toFixed(1)}%</p>
+                    <p className="text-lg font-bold text-slate-800 dark:text-txt-primary">₹{breakdown.luxury.toFixed(0)}</p>
+                    <p className="text-xs text-slate-400 dark:text-txt-muted">{breakdown.luxuryPct.toFixed(1)}%</p>
                   </div>
                 </div>
               )}
@@ -193,13 +190,13 @@ const Reports = () => {
                     <span className="text-sm font-medium text-accent-primary">Budget Usage</span>
                     <span className="text-sm font-bold text-accent-primary">{((currentStats.total / profile.monthly_budget) * 100).toFixed(1)}%</span>
                   </div>
-                  <div className="w-full bg-fintech-secondary rounded-full h-3">
+                  <div className="w-full bg-slate-200 dark:bg-fintech-secondary rounded-full h-3">
                     <div className={`h-3 rounded-full transition-all duration-500 ${
                       (currentStats.total / profile.monthly_budget) * 100 > 100 ? 'bg-accent-danger' :
                       (currentStats.total / profile.monthly_budget) * 100 > 80 ? 'bg-accent-warning' : 'bg-accent-success'
                     }`} style={{ width: `${Math.min(100, (currentStats.total / profile.monthly_budget) * 100)}%` }} />
                   </div>
-                  <p className="text-xs text-txt-muted mt-2">
+                  <p className="text-xs text-slate-400 dark:text-txt-muted mt-2">
                     ₹{currentStats.total.toLocaleString('en-IN')} of ₹{profile.monthly_budget.toLocaleString('en-IN')} budget used
                   </p>
                 </div>
@@ -210,19 +207,19 @@ const Reports = () => {
                 <div className="bg-gradient-to-r from-accent-insights/10 to-accent-prediction/10 rounded-xl p-4 border border-accent-insights/20">
                   <div className="flex items-center gap-2 mb-2">
                     <Target size={16} className="text-accent-insights" />
-                    <span className="text-sm font-bold text-txt-primary">Prediction Summary</span>
+                    <span className="text-sm font-bold text-slate-800 dark:text-txt-primary">Prediction Summary</span>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <p className="text-xs text-txt-muted">Predicted Next Month</p>
-                      <p className="text-sm font-bold text-txt-primary">₹{prediction.predicted_amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+                      <p className="text-xs text-slate-400 dark:text-txt-muted">Predicted Next Month</p>
+                      <p className="text-sm font-bold text-slate-800 dark:text-txt-primary">₹{prediction.predicted_amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-txt-muted">Confidence</p>
-                      <p className="text-sm font-bold text-txt-primary">{prediction.confidence.toFixed(0)}%</p>
+                      <p className="text-xs text-slate-400 dark:text-txt-muted">Confidence</p>
+                      <p className="text-sm font-bold text-slate-800 dark:text-txt-primary">{prediction.confidence.toFixed(0)}%</p>
                     </div>
                     <div>
-                      <p className="text-xs text-txt-muted">Risk Level</p>
+                      <p className="text-xs text-slate-400 dark:text-txt-muted">Risk Level</p>
                       <p className={`text-sm font-bold ${
                         forecast.riskLevel === 'critical' ? 'text-accent-danger' :
                         forecast.riskLevel === 'high' ? 'text-accent-warning' :
@@ -259,13 +256,12 @@ const Reports = () => {
                 </div>
               )}
 
-              <p className="text-center text-xs text-txt-muted mt-2">
+              <p className="text-center text-xs text-slate-400 dark:text-txt-muted mt-2">
                 PDF includes summary, category breakdown, budget analysis, health score, predictions, and all transactions
               </p>
             </div>
-          </div>
-        </main>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 };

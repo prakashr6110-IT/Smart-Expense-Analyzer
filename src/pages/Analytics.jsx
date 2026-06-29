@@ -3,8 +3,11 @@ import { useExpenses } from '../context/ExpenseContext';
 import { getSpendingBreakdown, getExpenseType } from '../utils/categoryClassification';
 import { calculateFinancialScore, getScoreRating } from '../utils/prediction';
 import { useAuth } from '../context/AuthContext';
-import Sidebar from '../components/Layout/Sidebar';
-import TopBar from '../components/Layout/TopBar';
+import Navbar from '../components/Layout/Navbar';
+import Card from '../components/UI/Card';
+import InsightCard from '../components/UI/InsightCard';
+import EmptyState from '../components/UI/EmptyState';
+import Footer from '../components/UI/Footer';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer, AreaChart, Area
@@ -15,8 +18,19 @@ import {
 } from 'lucide-react';
 import { format, parseISO, startOfWeek, startOfMonth, startOfYear, eachDayOfInterval, subDays, getHours } from 'date-fns';
 
-const COLORS = ['#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#ef4444', '#10b981', '#06b6d4', '#6b7280'];
-const SPLIT_COLORS = ['#10b981', '#8b5cf6'];
+const COLORS = ['#00C9A7', '#7C6FFF', '#f59e0b', '#ec4899', '#ef4444', '#10b981', '#06b6d4', '#6b7280'];
+const SPLIT_COLORS = ['#00C9A7', '#7C6FFF'];
+
+// Dark tooltip style for charts
+const TOOLTIP_STYLE = {
+  backgroundColor: '#111827',
+  border: '1px solid rgba(255,255,255,0.1)',
+  borderRadius: '12px',
+  color: '#F8FAFC',
+  boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+};
+const AXIS_COLOR = '#64748B';
+const GRID_COLOR = 'rgba(255,255,255,0.05)';
 
 const Analytics = () => {
   const { expenses } = useExpenses();
@@ -98,24 +112,22 @@ const Analytics = () => {
   const hasData = filteredExpenses.length > 0;
 
   return (
-    <div className="min-h-screen bg-fintech-bg transition-colors duration-300">
-      <Sidebar />
-      <div className="lg:ml-64">
-        <TopBar />
-        <main className="p-6">
+    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
+      <Navbar />
+      <main className="p-4 md:p-6 lg:p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-accent-primary/20 flex items-center justify-center">
                 <BarChart3 size={24} className="text-accent-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-heading font-bold text-txt-primary">Analytics</h2>
-                <p className="text-sm text-txt-muted">Visualize your spending patterns</p>
+                <h2 className="text-h1 font-heading text-slate-800 dark:text-txt-primary">Analytics</h2>
+                <p className="text-sm text-slate-400 dark:text-txt-muted">Visualize your spending patterns</p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 bg-fintech-card rounded-xl p-1 border border-white/5">
-              <Calendar size={18} className="text-txt-muted ml-2" />
+            <div className="flex items-center space-x-2 bg-slate-100 dark:bg-fintech-card rounded-xl p-1 border border-slate-200 dark:border-white/5">
+              <Calendar size={18} className="text-slate-400 dark:text-txt-muted ml-2" />
               {['weekly', 'monthly', 'yearly'].map((p) => (
                 <button
                   key={p}
@@ -123,7 +135,7 @@ const Analytics = () => {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     period === p
                       ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/30'
-                      : 'text-txt-secondary hover:bg-white/5'
+                      : 'text-slate-600 dark:text-txt-secondary hover:bg-slate-200 dark:hover:bg-white/5'
                   }`}
                 >
                   {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -133,17 +145,16 @@ const Analytics = () => {
           </div>
 
           {!hasData ? (
-            <div className="card text-center py-16">
-              <div className="w-20 h-20 bg-fintech-secondary rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
-                <BarChart3 size={36} className="text-txt-muted" />
-              </div>
-              <p className="text-txt-secondary text-lg font-medium">Add more expenses to unlock analytics</p>
-              <p className="text-sm text-txt-muted mt-2">Your spending insights and charts will appear here</p>
-            </div>
+            <Card className="text-center py-16">
+              <EmptyState
+                heading="No analytics yet"
+                subheading="Add more expenses to unlock spending insights and visualizations"
+              />
+            </Card>
           ) : (
             <>
               {/* Financial Health Score Card */}
-              <div className="card mb-6 animate-slide-in-up">
+              <Card className="mb-6 animate-slide-in-up">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-4">
                     <div className={`w-16 h-16 rounded-full flex items-center justify-center border-4 ${
@@ -160,7 +171,7 @@ const Analytics = () => {
                       </span>
                     </div>
                     <div>
-                      <h3 className="text-lg font-heading font-bold text-txt-primary flex items-center gap-2">
+                      <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary flex items-center gap-2">
                         <Award size={20} className="text-accent-primary" />
                         Financial Health Score
                       </h3>
@@ -174,8 +185,8 @@ const Analytics = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-txt-muted">Score: {Math.round(financialScore)}/100</p>
-                    <div className="w-48 h-3 bg-fintech-secondary rounded-full mt-2 overflow-hidden">
+                    <p className="text-sm text-slate-400 dark:text-txt-muted">Score: {Math.round(financialScore)}/100</p>
+                    <div className="w-48 h-3 bg-slate-200 dark:bg-fintech-secondary rounded-full mt-2 overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           financialScore >= 70 ? 'bg-gradient-to-r from-accent-success to-emerald-400' :
@@ -187,46 +198,47 @@ const Analytics = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Card>
 
               {/* Spending Quality Banner */}
               {breakdown.total > 0 && (
-                <div className="card mb-6 bg-gradient-to-r from-accent-success/5 to-accent-insights/5 border-l-4 border-accent-success animate-slide-in-up">
+                <Card className="mb-6 bg-gradient-to-r from-accent-success/5 to-accent-insights/5 border-l-4 border-accent-success animate-slide-in-up" noBorder>
                   <div className="flex items-center gap-3 mb-2">
                     <Shield size={20} className="text-accent-success" />
                     <Gem size={20} className="text-accent-insights" />
-                    <h3 className="text-lg font-heading font-bold text-txt-primary">Spending Quality</h3>
+                    <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary">Spending Quality</h3>
                   </div>
-                  <p className="text-txt-secondary">
+                  <p className="text-slate-600 dark:text-txt-secondary">
                     <span className="text-accent-success font-bold">₹{breakdown.necessary.toFixed(0)} ({breakdown.necessaryPct.toFixed(0)}%)</span> was necessary spending and{' '}
                     <span className="text-accent-insights font-bold">₹{breakdown.luxury.toFixed(0)} ({breakdown.luxuryPct.toFixed(0)}%)</span> was luxury spending.
                   </p>
-                </div>
+                </Card>
               )}
 
               {/* Charts Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div className="card animate-slide-in-up">
-                  <h3 className="text-lg font-heading font-bold text-txt-primary mb-4">Category Distribution</h3>
+                <Card className="animate-slide-in-up" hoverable={false}>
+                  <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary mb-4">Category Distribution</h3>
                   {categoryData.length > 0 ? (
                     <ResponsiveContainer width="100%" height={280}>
                       <PieChart>
                         <Pie data={categoryData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value"
-                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}
+                          style={{ fontSize: '12px', fontWeight: 600 }}>
                           {categoryData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(value) => `₹${value}`} contentStyle={{ backgroundColor: '#1E293B', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#F8FAFC' }} />
+                        <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#F8FAFC', fontWeight: 600 }} labelStyle={{ color: '#94A3B8', fontWeight: 600 }} />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
                     <EmptyChartState message="No category data available" />
                   )}
-                </div>
+                </Card>
 
-                <div className="card animate-slide-in-up">
-                  <h3 className="text-lg font-heading font-bold text-txt-primary mb-4">Necessary vs Luxury</h3>
+                <Card className="animate-slide-in-up" hoverable={false}>
+                  <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary mb-4">Necessary vs Luxury</h3>
                   {splitData.length > 0 ? (
                     <>
                       <ResponsiveContainer width="100%" height={240}>
@@ -236,93 +248,87 @@ const Analytics = () => {
                               <Cell key={`cell-${index}`} fill={SPLIT_COLORS[index]} />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(value) => `₹${value}`} contentStyle={{ backgroundColor: '#1E293B', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#F8FAFC' }} />
+                          <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#F8FAFC', fontWeight: 600 }} labelStyle={{ color: '#94A3B8', fontWeight: 600 }} />
                         </PieChart>
                       </ResponsiveContainer>
                       <div className="flex justify-center gap-6 mt-2">
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full bg-accent-success" />
-                          <span className="text-sm text-txt-muted">Necessary</span>
+                          <div className="w-3 h-3 rounded-full bg-[#00C9A7]" />
+                          <span className="text-sm text-slate-500 dark:text-txt-muted font-medium">Necessary</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full bg-accent-insights" />
-                          <span className="text-sm text-txt-muted">Luxury</span>
+                          <div className="w-3 h-3 rounded-full bg-[#7C6FFF]" />
+                          <span className="text-sm text-slate-500 dark:text-txt-muted font-medium">Luxury</span>
                         </div>
                       </div>
                     </>
                   ) : (
                     <EmptyChartState message="No spending data available" />
                   )}
-                </div>
+                </Card>
               </div>
 
               {/* Budget vs Actual (Bar Chart) */}
-              <div className="card mb-6 animate-slide-in-up">
-                <h3 className="text-lg font-heading font-bold text-txt-primary mb-4">Budget vs Actual Spending</h3>
+              <Card className="mb-6 animate-slide-in-up" hoverable={false}>
+                <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary mb-4">Budget vs Actual Spending</h3>
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={budgetVsActualData} barSize={60}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="name" stroke="#64748B" />
-                    <YAxis stroke="#64748B" />
-                    <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} contentStyle={{ backgroundColor: '#1E293B', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#F8FAFC' }} />
-                    <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
+                    <XAxis dataKey="name" stroke={AXIS_COLOR} tick={{ fill: AXIS_COLOR, fontSize: 13, fontWeight: 500 }} />
+                    <YAxis stroke={AXIS_COLOR} tick={{ fill: AXIS_COLOR, fontSize: 12, fontWeight: 500 }} />
+                    <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#F8FAFC', fontWeight: 600 }} labelStyle={{ color: '#94A3B8', fontWeight: 600 }} />
+                    <Bar dataKey="value" radius={[8, 8, 0, 0]} animationDuration={400}>
                       {budgetVsActualData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.fill} />
                       ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
-              </div>
+              </Card>
 
               {/* Monthly Spending Trend (Area Chart) */}
-              <div className="card mb-6 animate-slide-in-up">
-                <h3 className="text-lg font-heading font-bold text-txt-primary mb-4">Spending Trend</h3>
+              <Card className="mb-6 animate-slide-in-up" hoverable={false}>
+                <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary mb-4">Spending Trend</h3>
                 {trendData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={trendData}>
                       <defs>
                         <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1}/>
+                          <stop offset="5%" stopColor="#7C6FFF" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#7C6FFF" stopOpacity={0.1}/>
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="date" stroke="#64748B" fontSize={12} />
-                      <YAxis stroke="#64748B" />
-                      <Tooltip formatter={(value) => `₹${value}`} contentStyle={{ backgroundColor: '#1E293B', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#F8FAFC' }} />
-                      <Area type="monotone" dataKey="amount" stroke="#8b5cf6" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" name="Daily Spending" />
+                      <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
+                      <XAxis dataKey="date" stroke={AXIS_COLOR} fontSize={12} tick={{ fill: AXIS_COLOR, fontWeight: 500 }} />
+                      <YAxis stroke={AXIS_COLOR} tick={{ fill: AXIS_COLOR, fontSize: 12, fontWeight: 500 }} />
+                      <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#F8FAFC', fontWeight: 600 }} labelStyle={{ color: '#94A3B8', fontWeight: 600 }} />
+                      <Area type="monotone" dataKey="amount" stroke="#7C6FFF" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" name="Daily Spending" animationDuration={400} />
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
                   <EmptyChartState message="Add expenses to see spending trends" />
                 )}
-              </div>
+              </Card>
 
               {/* Insights Section */}
               {insights.length > 0 && (
-                <div className="card animate-slide-in-up">
-                  <div className="flex items-center gap-3 mb-4">
+                <div className="animate-slide-in-up">
+                  <div className="flex items-center gap-3 mb-5">
                     <div className="w-10 h-10 rounded-xl bg-accent-warning/20 flex items-center justify-center">
                       <Lightbulb size={20} className="text-accent-warning" />
                     </div>
-                    <h3 className="text-lg font-heading font-bold text-txt-primary">Spending Insights</h3>
+                    <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary">Spending Insights</h3>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {insights.map((insight, index) => (
-                      <div
+                      <InsightCard
                         key={index}
-                        className={`p-4 rounded-xl border transition-all duration-300 hover:scale-[1.01] ${getInsightStyles(insight.type)}`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${getInsightIconBg(insight.type)}`}>
-                            <insight.icon size={18} className={getInsightIconColor(insight.type)} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-txt-primary">{insight.title}</p>
-                            <p className="text-xs text-txt-muted mt-1">{insight.description}</p>
-                          </div>
-                        </div>
-                      </div>
+                        title={insight.title}
+                        description={insight.description}
+                        category={insight.type === 'warning' ? 'warning' : insight.type === 'success' ? 'suggestion' : 'pattern'}
+                        icon={insight.icon}
+                        delay={index * 80}
+                      />
                     ))}
                   </div>
                 </div>
@@ -330,15 +336,15 @@ const Analytics = () => {
             </>
           )}
         </main>
-      </div>
+        <Footer />
     </div>
   );
 };
 
 const EmptyChartState = ({ message }) => (
   <div className="flex flex-col items-center justify-center py-12">
-    <BarChart3 size={40} className="text-txt-muted mb-3" />
-    <p className="text-txt-muted text-sm">{message}</p>
+    <BarChart3 size={40} className="text-slate-500 dark:text-txt-muted mb-3" />
+    <p className="text-slate-500 dark:text-txt-muted text-sm">{message}</p>
   </div>
 );
 
@@ -348,7 +354,7 @@ const getInsightStyles = (type) => {
     case 'success': return 'bg-accent-success/5 border-accent-success/20 hover:border-accent-success/40';
     case 'info': return 'bg-accent-primary/5 border-accent-primary/20 hover:border-accent-primary/40';
     case 'trend': return 'bg-accent-insights/5 border-accent-insights/20 hover:border-accent-insights/40';
-    default: return 'bg-fintech-secondary border-white/10 hover:border-white/20';
+    default: return 'bg-slate-200 dark:bg-fintech-secondary border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20';
   }
 };
 
@@ -368,7 +374,7 @@ const getInsightIconColor = (type) => {
     case 'success': return 'text-accent-success';
     case 'info': return 'text-accent-primary';
     case 'trend': return 'text-accent-insights';
-    default: return 'text-txt-muted';
+    default: return 'text-slate-400 dark:text-txt-muted';
   }
 };
 
