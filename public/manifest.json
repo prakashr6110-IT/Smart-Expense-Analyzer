@@ -1,19 +1,19 @@
 {
-  "name": "Smart Expense Behavior Analyzer",
-  "short_name": "Smart Expense",
-  "description": "Track, Analyze, and Predict your expenses",
-  "start_url": "/",
+  "name": "Finora - Smart Expense Analyzer",
+  "short_name": "Finora",
+  "description": "Track expenses, analyze spending behavior, and receive AI-powered financial insights.",
+  "theme_color": "#0B1220",
+  "background_color": "#0B1220",
   "display": "standalone",
-  "background_color": "#1a1a2e",
-  "theme_color": "#3b82f6",
+  "start_url": "/",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/finora-logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/logo.png",
+      "src": "/finora-logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
