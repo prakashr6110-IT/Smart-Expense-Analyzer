@@ -18,6 +18,10 @@ export async function askOllama(messages, options = {}) {
 
   if (!res.ok) {
     const detail = await res.json().catch(() => ({}))
+    // 404/405 means the request hit static hosting instead of the API function.
+    if (res.status === 404 || res.status === 405) {
+      throw new Error('AI service is not deployed on this site — redeploy so /api/ollama/chat is published.')
+    }
     throw new Error(detail.error || `Request failed with status ${res.status}`)
   }
 
