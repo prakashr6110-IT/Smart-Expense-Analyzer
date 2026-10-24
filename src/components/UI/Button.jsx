@@ -7,9 +7,9 @@ import { forwardRef } from 'react';
  */
 const VARIANTS = {
   primary:
-    'bg-[#00C9A7] text-[#0B1220] font-semibold hover:bg-[#00B89A] focus-visible:ring-[#00C9A7]/40 active:scale-[0.98]',
+    'relative overflow-hidden bg-gradient-to-r from-[#00C9A7] to-emerald-500 text-[#0B1220] font-semibold hover:shadow-glow-teal focus-visible:ring-[#00C9A7]/40 active:scale-[0.98]',
   outline:
-    'bg-transparent border border-[#00C9A7] text-[#00C9A7] font-semibold hover:bg-[#00C9A7]/[0.08] focus-visible:ring-[#00C9A7]/40',
+    'bg-transparent border border-[#00C9A7] text-[#00C9A7] font-semibold hover:bg-[#00C9A7]/[0.08] hover:shadow-glow-teal focus-visible:ring-[#00C9A7]/40',
   ghost:
     'bg-transparent border-none text-[#94A3B8] hover:text-white focus-visible:ring-white/30',
 };

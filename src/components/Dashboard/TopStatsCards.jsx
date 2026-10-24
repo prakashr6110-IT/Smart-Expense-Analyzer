@@ -125,7 +125,7 @@ const TopStatsCards = ({ expenses, profile }) => {
                 {stat.label}
               </span>
             </div>
-            <p className="text-xl font-heading font-bold text-slate-800 dark:text-txt-primary">{stat.value}</p>
+            <p className="text-xl font-heading font-bold tabular-nums text-slate-800 dark:text-txt-primary">{stat.value}</p>
             <p className="text-[11px] text-slate-400 dark:text-txt-muted mt-1.5">{stat.subtext}</p>
           </div>
         ))}

@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Layout/Navbar';
-import Footer from '../components/UI/Footer';
 import UserAvatar, { getUserDisplayName } from '../components/Common/UserAvatar';
-import { User, IndianRupee, Calendar, Save, CheckCircle, AlertCircle, Copy, ExternalLink, RefreshCw, Database, Mail, Shield, Pencil, X, Phone, MapPin, Briefcase } from 'lucide-react';
+import { User, IndianRupee, Calendar, Save, CheckCircle, AlertCircle, Copy, ExternalLink, RefreshCw, Database, Mail, Shield, Pencil, X, Phone, MapPin, Briefcase, Wallet } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 
 // Full SQL migration content embedded for easy copy
@@ -123,6 +121,7 @@ WHERE NOT EXISTS (
 const Profile = () => {
   const { user, profile, updateProfile, updateUserMetadata } = useAuth();
   const [monthlyBudget, setMonthlyBudget] = useState('');
+  const [monthlySalary, setMonthlySalary] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -134,6 +133,16 @@ const Profile = () => {
   const [editForm, setEditForm] = useState({ full_name: '', phone: '', location: '', occupation: '', bio: '' });
 
   useEffect(() => { if (profile?.monthly_budget) setMonthlyBudget(String(profile.monthly_budget)); }, [profile]);
+  useEffect(() => {
+    const stored = user?.user_metadata?.monthly_salary;
+    if (stored) setMonthlySalary(String(Math.round(Number(stored))));
+  }, [user]);
+  useEffect(() => {
+    if (!editOpen) return;
+    const handleKey = (e) => { if (e.key === 'Escape') setEditOpen(false); };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [editOpen]);
   useEffect(() => {
     if (editOpen && user) {
       const meta = user.user_metadata || {};
@@ -152,19 +161,24 @@ const Profile = () => {
   const handleUpdateBudget = async (e) => {
     e.preventDefault(); setLoading(true); setError(''); setSuccess(false);
     const amount = parseFloat(monthlyBudget);
+    const salary = parseFloat(monthlySalary);
     if (isNaN(amount) || amount <= 0) { setError('Please enter a valid amount greater than 0'); setLoading(false); return; }
-    try { await updateProfile({ monthly_budget: amount }); setSuccess(true); setTimeout(() => setSuccess(false), 3000); } catch (err) { setError(err.message || 'Failed to update budget.'); } finally { setLoading(false); }
+    if (monthlySalary && (isNaN(salary) || salary <= 0)) { setError('Please enter a valid salary greater than 0'); setLoading(false); return; }
+    try {
+      // Salary lives in auth metadata (no schema change needed); budget stays in profiles.
+      if (monthlySalary) await updateUserMetadata({ monthly_salary: salary });
+      await updateProfile({ monthly_budget: amount });
+      setSuccess(true); setTimeout(() => setSuccess(false), 3000);
+    } catch (err) { setError(err.message || 'Failed to update budget.'); } finally { setLoading(false); }
   };
 
   if (!user) {
-    return (<div className="min-h-screen bg-slate-100 dark:bg-fintech-bg flex items-center justify-center"><p className="text-slate-600 dark:text-txt-secondary text-lg">Please log in to view your profile</p></div>);
+    return (<div className="py-16 flex items-center justify-center"><p className="text-slate-600 dark:text-txt-secondary text-lg">Please log in to view your profile</p></div>);
   }
 
   if (user && !profile) {
     return (
-      <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg">
-        <Navbar />
-        <main className="p-4 md:p-6 lg:p-8">
+      <div className="animate-fade-in">
           <div className="card bg-accent-warning/5 border-l-4 border-accent-warning">
             <h3 className="text-lg font-heading font-bold text-slate-800 dark:text-txt-primary mb-4 flex items-center"><Database size={24} className="mr-2 text-accent-warning" /> Database Setup Required</h3>
             <p className="text-slate-600 dark:text-txt-secondary mb-4">Your profile could not be loaded. This usually means the database tables haven't been created yet.</p>
@@ -194,15 +208,12 @@ const Profile = () => {
               </button>
             </div>
           </div>
-        </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
-      <Navbar />
-      <main className="p-4 md:p-6 lg:p-8 animate-fade-in flex-1">
+    <div className="animate-fade-in">
             <div className="flex items-center gap-3 mb-6 animate-slide-in-up">
               <div className="w-12 h-12 rounded-xl bg-accent-primary/20 flex items-center justify-center">
                 <User size={24} className="text-accent-primary" />
@@ -228,11 +239,18 @@ const Profile = () => {
                 <div className="flex items-center gap-2 mt-1 text-slate-400 dark:text-txt-muted"><Mail size={14} /><span className="text-sm">{user?.email}</span></div>
                 <div className="flex items-center gap-2 mt-2 text-sm text-slate-400 dark:text-txt-muted"><Calendar size={14} /><span>Member Since: {profile.created_at ? format(parseISO(profile.created_at), 'MMMM yyyy') : 'Recently joined'}</span></div>
               </div>
-              <div className="grid grid-cols-2 border-t border-slate-200 dark:border-white/5">
+              <div className="grid grid-cols-3 border-t border-slate-200 dark:border-white/5">
                 <div className="flex flex-col items-center py-4">
                   <IndianRupee size={18} className="text-accent-primary mb-1" />
                   <span className="text-xs text-slate-400 dark:text-txt-muted">Budget</span>
                   <span className="text-sm font-bold text-slate-800 dark:text-txt-primary">₹{profile.monthly_budget ? profile.monthly_budget.toLocaleString() : '10,000'}</span>
+                </div>
+                <div className="flex flex-col items-center py-4 border-l border-slate-200 dark:border-white/5">
+                  <Wallet size={18} className="text-accent-insights mb-1" />
+                  <span className="text-xs text-slate-400 dark:text-txt-muted">Salary</span>
+                  <span className="text-sm font-bold text-slate-800 dark:text-txt-primary tabular-nums">
+                    {user?.user_metadata?.monthly_salary ? `₹${Math.round(Number(user.user_metadata.monthly_salary)).toLocaleString('en-IN')}` : 'Not set'}
+                  </span>
                 </div>
                 <div className="flex flex-col items-center py-4 border-l border-slate-200 dark:border-white/5">
                   <Shield size={18} className="text-accent-success mb-1" />
@@ -244,10 +262,19 @@ const Profile = () => {
 
             {/* Budget Settings */}
             <div className="card mb-6 animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
-              <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary mb-4">Monthly Budget</h3>
-              {success && (<div className="mb-4 flex items-center gap-2 p-3 rounded-xl bg-accent-success/10 border border-accent-success/20 text-accent-success text-sm"><CheckCircle size={20} /> <span className="font-medium">Budget updated successfully!</span></div>)}
+              <h3 className="text-h3 font-heading text-slate-800 dark:text-txt-primary mb-4">Monthly Income &amp; Budget</h3>
+              {success && (<div className="mb-4 flex items-center gap-2 p-3 rounded-xl bg-accent-success/10 border border-accent-success/20 text-accent-success text-sm"><CheckCircle size={20} /> <span className="font-medium">Saved successfully!</span></div>)}
               {error && (<div className="mb-4 flex items-center gap-2 p-3 rounded-xl bg-accent-danger/10 border border-accent-danger/20 text-accent-danger text-sm"><AlertCircle size={20} /> <span className="font-medium">{error}</span></div>)}
               <form onSubmit={handleUpdateBudget} className="space-y-4">
+                <div>
+                  <label htmlFor="monthlySalary" className="block text-sm font-medium text-slate-600 dark:text-txt-secondary mb-2">Enter Your Monthly Salary (₹)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-txt-muted text-lg font-medium">₹</span>
+                    <input type="number" id="monthlySalary" value={monthlySalary} onChange={(e) => setMonthlySalary(e.target.value)}
+                      className="input-field pl-10 text-lg font-semibold tabular-nums" placeholder="40000" step="500" min="0" />
+                  </div>
+                  <p className="text-xs text-slate-400 dark:text-txt-muted mt-2">Your take-home pay. Used to judge how well your spending stays in range.</p>
+                </div>
                 <div>
                   <label htmlFor="monthlyBudget" className="block text-sm font-medium text-slate-600 dark:text-txt-secondary mb-2">Enter Your Monthly Budget (₹)</label>
                   <div className="relative">
@@ -258,7 +285,7 @@ const Profile = () => {
                   <p className="text-xs text-slate-400 dark:text-txt-muted mt-2">Type your desired monthly spending limit.</p>
                 </div>
                 <button type="submit" disabled={loading} className="btn-primary flex items-center disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto">
-                  {loading ? <span>Saving...</span> : <><Save size={18} className="mr-2" /><span>Save Budget</span></>}
+                  {loading ? <span>Saving...</span> : <><Save size={18} className="mr-2" /><span>Save Income &amp; Budget</span></>}
                 </button>
               </form>
             </div>
@@ -269,7 +296,13 @@ const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-accent-primary/5 rounded-xl p-4 border border-accent-primary/20 transition-all hover:scale-105">
                   <p className="text-sm text-slate-400 dark:text-txt-muted">Current Budget</p>
-                  <p className="text-2xl font-bold text-accent-primary mt-1">₹{profile.monthly_budget ? profile.monthly_budget.toFixed(2) : '0.00'}</p>
+                  <p className="text-2xl font-bold text-accent-primary mt-1 tabular-nums">₹{profile.monthly_budget ? profile.monthly_budget.toFixed(2) : '0.00'}</p>
+                </div>
+                <div className="bg-accent-insights/5 rounded-xl p-4 border border-accent-insights/20 transition-all hover:scale-105">
+                  <p className="text-sm text-slate-400 dark:text-txt-muted">Monthly Salary</p>
+                  <p className="text-2xl font-bold text-accent-insights mt-1 tabular-nums">
+                    {user?.user_metadata?.monthly_salary ? `₹${Math.round(Number(user.user_metadata.monthly_salary)).toLocaleString('en-IN')}` : 'Not set yet'}
+                  </p>
                 </div>
                 <div className="bg-accent-success/5 rounded-xl p-4 border border-accent-success/20 transition-all hover:scale-105">
                   <p className="text-sm text-slate-400 dark:text-txt-muted">Account Status</p>
@@ -325,8 +358,6 @@ const Profile = () => {
                 </div>
               </div>
             )}
-      </main>
-      <Footer />
     </div>
   );
 };

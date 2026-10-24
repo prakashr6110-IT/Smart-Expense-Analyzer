@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useExpenses } from '../context/ExpenseContext';
-import Navbar from '../components/Layout/Navbar';
-import Footer from '../components/UI/Footer';
-import { generateReport, generateCSV } from '../utils/reportGenerator';
+import PageLoader from '../components/UI/PageLoader';
+import { generateReport, generateCSV, generatePrintReport } from '../utils/reportGenerator';
 import { calculateFinancialScore, getScoreRating, predictNextMonthExpense, calculateBudgetExhaustionForecast } from '../utils/prediction';
 import { getSpendingBreakdown } from '../utils/categoryClassification';
 import {
@@ -53,6 +52,10 @@ const Reports = () => {
     try { generateCSV(expenses, selectedPeriod, profile); setSuccess('CSV downloaded successfully!'); setTimeout(() => setSuccess(''), 3000); } catch (err) { console.error('Error generating CSV:', err); }
   };
 
+  const handlePrintReport = () => {
+    try { generatePrintReport(expenses, selectedPeriod, profile, user?.email); } catch (err) { console.error('Error generating print report:', err); }
+  };
+
   const currentStats = getFilteredStats(selectedPeriod);
   const financialScore = calculateFinancialScore(expenses, monthlyBudget);
   const scoreRating = getScoreRating(financialScore);
@@ -61,13 +64,11 @@ const Reports = () => {
   const breakdown = getSpendingBreakdown(expenses.filter(exp => { const now = new Date(); const expDate = parseISO(exp.expense_date); return expDate >= startOfMonth(now) && expDate <= endOfMonth(now); }));
 
   if (loading) {
-    return (<div className="min-h-screen bg-slate-100 dark:bg-fintech-bg flex items-center justify-center"><p className="text-slate-600 dark:text-txt-secondary">Loading...</p></div>);
+    return <PageLoader />;
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
-      <Navbar />
-      <main className="p-4 md:p-6 lg:p-8 animate-fade-in">
+    <div className="animate-fade-in">
             {/* Header */}
             <div className="flex items-center gap-3 mb-6 animate-slide-in-up">
               <div className="w-12 h-12 rounded-xl bg-accent-primary/20 flex items-center justify-center">
@@ -235,7 +236,7 @@ const Reports = () => {
 
             {/* Export Buttons */}
             <div className="space-y-3 animate-slide-in-up" style={{ animationDelay: '0.4s' }}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button onClick={handleDownloadPDF} disabled={downloading === 'pdf' || expenses.length === 0}
                   className="btn-primary flex items-center justify-center gap-2 py-3 disabled:opacity-50 disabled:cursor-not-allowed">
                   {downloading === 'pdf' ? (
@@ -243,6 +244,10 @@ const Reports = () => {
                   ) : (
                     <><FileDown size={20} /> Export PDF</>
                   )}
+                </button>
+                <button onClick={handlePrintReport} disabled={expenses.length === 0}
+                  className="flex items-center justify-center gap-2 py-3 bg-accent-insights hover:bg-accent-insights/80 disabled:bg-accent-insights/40 text-white rounded-xl font-medium transition-all disabled:cursor-not-allowed shadow-lg shadow-accent-insights/20">
+                  <FileText size={20} /> Print Report
                 </button>
                 <button onClick={handleDownloadCSV} disabled={expenses.length === 0}
                   className="flex items-center justify-center gap-2 py-3 bg-accent-success hover:bg-accent-success/80 disabled:bg-accent-success/40 text-white rounded-xl font-medium transition-all disabled:cursor-not-allowed shadow-lg shadow-accent-success/20">
@@ -257,11 +262,9 @@ const Reports = () => {
               )}
 
               <p className="text-center text-xs text-slate-400 dark:text-txt-muted mt-2">
-                PDF includes summary, category breakdown, budget analysis, health score, predictions, and all transactions
+                Professional reports include: executive summary, KPI metrics, budget analysis, category breakdown, trends, insights, recommendations & detailed records
               </p>
             </div>
-      </main>
-      <Footer />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useExpenses } from '../context/ExpenseContext';
-import Navbar from '../components/Layout/Navbar';
-import Footer from '../components/UI/Footer';
+import PageLoader from '../components/UI/PageLoader';
 import {
   Bell, AlertTriangle, Info, AlertCircle, Check, Trash2, Copy, ExternalLink,
   CheckCircle, Filter, Brain, TrendingUp, Shield, X
@@ -98,18 +97,12 @@ const Alerts = () => {
   });
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg flex items-center justify-center">
-        <p className="text-slate-600 dark:text-txt-secondary">Loading...</p>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
-      <Navbar />
-      <main className="p-4 md:p-6 lg:p-8">
-          {/* Header */}
+    <div className="animate-fade-in">
+            {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-accent-primary/20 flex items-center justify-center">
@@ -260,8 +253,6 @@ const Alerts = () => {
               })}
             </div>
           )}
-        </main>
-        <Footer />
     </div>
   );
 };

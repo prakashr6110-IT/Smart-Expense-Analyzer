@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['Poppins', 'sans-serif'],
+        heading: ['"Plus Jakarta Sans"', 'Poppins', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
       },
       fontSize: {
@@ -59,13 +59,42 @@ export default {
           other: '#6b7280',
         }
       },
+      boxShadow: {
+        'card': '0 4px 24px rgba(0,0,0,0.08)',
+        'card-hover': '0 12px 40px rgba(0,0,0,0.14)',
+        'card-dark': '0 4px 24px rgba(0,0,0,0.3)',
+        'card-dark-hover': '0 12px 40px rgba(0,0,0,0.45)',
+        'glow-teal': '0 0 24px rgba(0,201,167,0.35)',
+        'glow-teal-lg': '0 0 48px rgba(0,201,167,0.45)',
+        'glow-purple': '0 0 24px rgba(124,111,255,0.35)',
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
       animation: {
         'float': 'float 3s ease-in-out infinite',
+        'float-slow': 'float 6s ease-in-out infinite',
+        'shimmer': 'shimmer 2.5s linear infinite',
+        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+        'spin-slow': 'spin 8s linear infinite',
+        'ripple': 'ripple 2.5s ease-out infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-5px)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { opacity: '0.5' },
+          '50%': { opacity: '1' },
+        },
+        ripple: {
+          '0%': { transform: 'scale(1)', opacity: '0.4' },
+          '100%': { transform: 'scale(1.8)', opacity: '0' },
         },
       },
     },

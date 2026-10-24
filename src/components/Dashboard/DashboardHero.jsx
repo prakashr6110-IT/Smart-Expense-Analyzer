@@ -117,7 +117,7 @@ const DashboardHero = ({ user, profile, expenses }) => {
               </div>
               <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Spent</span>
             </div>
-            <p className="text-xl sm:text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">
+            <p className="text-xl sm:text-2xl font-heading font-bold tabular-nums text-slate-800 dark:text-txt-primary">
               ₹{totalSpent.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
             </p>
             <div className="flex items-center gap-1 mt-2">
@@ -145,7 +145,7 @@ const DashboardHero = ({ user, profile, expenses }) => {
               </div>
               <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Budget</span>
             </div>
-            <p className="text-xl sm:text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">
+            <p className="text-xl sm:text-2xl font-heading font-bold tabular-nums text-slate-800 dark:text-txt-primary">
               {budget > 0 ? `₹${budget.toLocaleString('en-IN', { maximumFractionDigits: 0 })}` : 'Not Set'}
             </p>
             {budget > 0 && (
@@ -172,7 +172,7 @@ const DashboardHero = ({ user, profile, expenses }) => {
               </div>
               <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Txns</span>
             </div>
-            <p className="text-xl sm:text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">{monthExpenses.length}</p>
+            <p className="text-xl sm:text-2xl font-heading font-bold tabular-nums text-slate-800 dark:text-txt-primary">{monthExpenses.length}</p>
             <p className="text-[11px] text-slate-500 dark:text-txt-muted mt-2">this month</p>
           </div>
 
@@ -196,7 +196,7 @@ const DashboardHero = ({ user, profile, expenses }) => {
               </div>
               <span className="text-[11px] font-semibold text-slate-500 dark:text-txt-muted uppercase tracking-wider">Avg/Expense</span>
             </div>
-            <p className="text-xl sm:text-2xl font-heading font-bold text-slate-800 dark:text-txt-primary">
+            <p className="text-xl sm:text-2xl font-heading font-bold tabular-nums text-slate-800 dark:text-txt-primary">
               ₹{monthExpenses.length > 0 ? (totalSpent / monthExpenses.length).toLocaleString('en-IN', { maximumFractionDigits: 0 }) : '0'}
             </p>
             <p className="text-[11px] text-slate-500 dark:text-txt-muted mt-2">per transaction</p>

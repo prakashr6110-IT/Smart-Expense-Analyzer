@@ -19,16 +19,48 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #eef2f7;
+  background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 201, 167, 0.08), transparent);
   color: #1e293b;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .dark body {
   background-color: #0B1220;
+  background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 201, 167, 0.10), transparent);
   color: #F8FAFC;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Text selection */
+::selection {
+  background: rgba(0, 201, 167, 0.3);
+  color: inherit;
+}
+
+/* Clean global scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.35);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 201, 167, 0.5);
+  background-clip: content-box;
 }
 
 @layer components {
@@ -36,17 +68,26 @@ h1, h2, h3, h4, h5, h6 {
   .card {
     @apply bg-white dark:bg-[#111827] rounded-2xl p-6 transition-all duration-200 ease-in-out;
     @apply border border-slate-200 dark:border-white/[0.07];
-    @apply shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)];
+    @apply shadow-card dark:shadow-card-dark hover:shadow-card-hover dark:hover:shadow-card-dark-hover;
     @apply hover:border-brand-teal/30 dark:hover:border-brand-teal/30;
-    @apply hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)];
+    @apply hover:-translate-y-0.5;
   }
   
-  /* Premium Primary Button */
+  /* Premium Primary Button with shine sweep */
   .btn-primary {
-    @apply bg-gradient-to-r from-brand-teal to-emerald-500 hover:from-emerald-500 hover:to-brand-teal;
+    @apply relative overflow-hidden bg-gradient-to-r from-brand-teal to-emerald-500;
     @apply text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300;
     @apply transform hover:scale-[1.02] active:scale-[0.98];
-    @apply shadow-lg hover:shadow-xl;
+    @apply shadow-lg shadow-brand-teal/25 hover:shadow-glow-teal;
+  }
+  
+  .btn-primary::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-out;
+  }
+  
+  .btn-primary:hover::after {
+    @apply translate-x-full;
   }
   
   /* Secondary Button */
@@ -91,6 +132,18 @@ h1, h2, h3, h4, h5, h6 {
   /* Gradient Text */
   .gradient-text {
     @apply bg-gradient-to-r from-brand-teal via-brand-purple to-brand-teal bg-clip-text text-transparent;
+    background-size: 200% auto;
+  }
+  
+  .gradient-text-animated {
+    @apply bg-gradient-to-r from-brand-teal via-brand-purple to-brand-teal bg-clip-text text-transparent;
+    background-size: 200% auto;
+    animation: gradient-shift 5s ease infinite;
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 100% center; }
   }
   
   /* Premium Shadow */
@@ -200,6 +253,65 @@ h1, h2, h3, h4, h5, h6 {
       transform: translateY(0);
     }
   }
+
+  /* ── Welcome ritual (post-login gate) ───────────────────────── */
+  @keyframes step-swap {
+    from {
+      opacity: 0;
+      transform: translateX(40px) scale(0.97);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes welcome-exit {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes caret-blink {
+    0%, 45% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes value-pop {
+    0% { transform: scale(1.18); opacity: 0.4; }
+    60% { transform: scale(0.98); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes slide-in-left {
+    from { opacity: 0; transform: translateX(-18px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  @keyframes draw-ring {
+    from { stroke-dashoffset: 264; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes draw-check {
+    from { stroke-dashoffset: 60; }
+    to { stroke-dashoffset: 0; }
+  }
   
   .animate-slide-in-right {
     animation: slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -233,6 +345,39 @@ h1, h2, h3, h4, h5, h6 {
   .animate-fade-in-up {
     animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
+
+  .animate-step-swap {
+    animation: step-swap 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-welcome-exit {
+    animation: welcome-exit 0.42s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  .animate-caret {
+    animation: caret-blink 0.9s steps(1, end) infinite;
+  }
+
+  .animate-value-pop {
+    animation: value-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .animate-slide-in-left {
+    animation: slide-in-left 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-shake {
+    animation: shake 0.4s ease-in-out both;
+  }
+
+  .animate-draw-ring {
+    animation: draw-ring 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .animate-draw-check {
+    stroke-dasharray: 60;
+    animation: draw-check 0.4s 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
   
   /* Scrollbar Styling */
   .scrollbar-thin::-webkit-scrollbar {
@@ -264,5 +409,16 @@ h1, h2, h3, h4, h5, h6 {
   
   .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Respect users who opt out of motion */
+@media (prefers-reduced-motion: reduce) {
+  .welcome-gate *,
+  .welcome-gate *::before,
+  .welcome-gate *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

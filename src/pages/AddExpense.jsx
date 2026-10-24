@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useExpenses } from '../context/ExpenseContext';
-import Navbar from '../components/Layout/Navbar';
-import Footer from '../components/UI/Footer';
 import SmartInsightsPanel from '../components/Expense/SmartInsightsPanel';
 import Button from '../components/UI/Button';
 import Input from '../components/UI/Input';
@@ -106,11 +104,7 @@ const AddExpense = () => {
   const isAutoSuggested = formData.expense_type === suggestedType;
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
-      <Navbar />
-
-      <main className="p-4 md:p-6 lg:p-8 animate-fade-in pb-24">
-          <div>
+    <div className="animate-fade-in pb-8">
             {/* Page Header */}
             <div className="mb-6">
               <h1 className="text-h1 font-heading text-slate-800 dark:text-txt-primary flex items-center gap-3">
@@ -119,7 +113,7 @@ const AddExpense = () => {
                 </div>
                 Add New Expense
               </h1>
-              <p className="text-sm text-slate-400 dark:text-txt-muted mt-2 ml-13">Record an expense and see real-time spending insights</p>
+              <p className="text-sm text-slate-400 dark:text-txt-muted mt-2 md:ml-[50px]">Record an expense and see real-time spending insights</p>
             </div>
 
             {/* Two-Column Layout */}
@@ -303,9 +297,6 @@ const AddExpense = () => {
                 />
               </div>
             </div>
-          </div>
-        </main>
-        <Footer />
     </div>
   );
 };

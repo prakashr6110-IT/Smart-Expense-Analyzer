@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useExpenses } from '../context/ExpenseContext';
 import DashboardHero from '../components/Dashboard/DashboardHero';
@@ -8,25 +8,27 @@ import FinancialScoreCard from '../components/Dashboard/FinancialScoreCard';
 import BehaviorInsights from '../components/Dashboard/BehaviorInsights';
 import SpendingStreaks from '../components/Dashboard/SpendingStreaks';
 import PredictionCard from '../components/Dashboard/PredictionCard';
+import AskFinoraAI from '../components/Dashboard/AskFinoraAI';
 import RecentTransactions from '../components/Dashboard/RecentTransactions';
 import AlertsSection from '../components/Dashboard/AlertsSection';
-import SummaryMetrics from '../components/Dashboard/SummaryMetrics';
 import FloatingAddButton from '../components/Common/FloatingAddButton';
-import Navbar from '../components/Layout/Navbar';
-import HeroSection from '../components/Landing/HeroSection';
 import EmptyState from '../components/UI/EmptyState';
-import Footer from '../components/UI/Footer';
-import { Trash2 } from 'lucide-react';
+import PageLoader from '../components/UI/PageLoader';
+import ConfirmModal from '../components/UI/ConfirmModal';
+import { Trash2, CheckCircle, PlusCircle, FileDown } from 'lucide-react';
+import { format } from 'date-fns';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { expenses, alerts, predictions, deleteExpense, loading } = useExpenses();
   const [clearing, setClearing] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [clearResult, setClearResult] = useState('');
 
   const handleClearAll = async () => {
-    if (!window.confirm(`Delete ALL ${expenses.length} expenses? This cannot be undone.`)) return;
     setClearing(true);
+    setClearResult('');
     try {
       let deleted = 0;
       for (const exp of expenses) {
@@ -37,75 +39,98 @@ const Dashboard = () => {
           console.error('Failed to delete', exp.id, e);
         }
       }
-      alert(`Deleted ${deleted} of ${expenses.length} expenses.`);
+      setClearResult(`Deleted ${deleted} of ${expenses.length} expenses.`);
+      setTimeout(() => setClearResult(''), 5000);
     } finally {
       setClearing(false);
+      setShowClearConfirm(false);
     }
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg flex items-center justify-center">
-        <p className="text-slate-600 dark:text-txt-secondary">Loading...</p>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
-      <Navbar />
+    <div className="animate-fade-in">
+      {/* Compact greeting + quick actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-h1 font-heading text-slate-800 dark:text-txt-primary">
+            Your financial overview
+          </h2>
+          <p className="text-sm text-slate-400 dark:text-txt-muted mt-1">
+            {format(new Date(), 'EEEE, MMMM d, yyyy')}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/reports"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-brand-teal text-brand-teal text-sm font-medium hover:bg-brand-teal/10 transition-all duration-200"
+          >
+            <FileDown size={16} />
+            <span>Reports</span>
+          </Link>
+          <Link
+            to="/add-expense"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl btn-primary !py-2.5 text-sm"
+          >
+            <PlusCircle size={16} />
+            <span>Add Expense</span>
+          </Link>
+        </div>
+      </div>
 
-      {/* Hero Section */}
-      <HeroSection />
+      {expenses.length === 0 ? (
+        /* Empty State - shown when no expenses */
+        <EmptyState
+          heading="No expenses yet"
+          subheading="Add your first expense and start seeing insights"
+          onIconClick={() => navigate('/add-expense')}
+        />
+      ) : (
+        <>
+          {/* Budget overview + financial health */}
+          <DashboardHero user={user} profile={profile} expenses={expenses} />
 
-      {/* Summary Metrics (below hero, overlapping slightly) */}
-      <SummaryMetrics expenses={expenses} profile={profile} />
-
-      {/* Analyzer Section */}
-      <div id="analyzer-section">
-        <main className="p-4 md:p-6 lg:p-8 pb-24">
-          {expenses.length === 0 ? (
-            /* Empty State - shown when no expenses */
-            <EmptyState
-              heading="No expenses yet"
-              subheading="Click the wallet icon above to add your first expense and start seeing insights"
-              onIconClick={() => navigate('/add-expense')}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+            <TopStatsCards expenses={expenses} profile={profile} />
+            <FinancialScoreCard
+              expenses={expenses}
+              profile={profile}
+              predictions={predictions}
             />
-          ) : (
-            <>
-              {/* Premium Hero Section */}
-              <DashboardHero user={user} profile={profile} expenses={expenses} />
-
-              {/* Spending Breakdown Stats */}
-          <TopStatsCards expenses={expenses} profile={profile} />
-
-          {/* Financial Score Card */}
-          <FinancialScoreCard
-            expenses={expenses}
-            profile={profile}
-            predictions={predictions}
-          />
+          </div>
 
           {/* Behavior Insights + Predictions side by side on large screens */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-16">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
             <BehaviorInsights expenses={expenses} profile={profile} />
             <PredictionCard expenses={expenses} profile={profile} />
           </div>
 
+          {/* Recent Transactions + AI assistant */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+            <RecentTransactions expenses={expenses} />
+            <AskFinoraAI expenses={expenses} profile={profile} />
+          </div>
+
           {/* Spending Streaks */}
           <SpendingStreaks expenses={expenses} profile={profile} />
-
-          {/* Recent Transactions (latest 5) */}
-          <RecentTransactions expenses={expenses} />
 
           {/* Alerts */}
           <AlertsSection alerts={alerts} />
 
           {/* Clear All */}
           {expenses.length > 0 && (
-            <div className="mt-6 flex justify-center">
+            <div className="mt-6 mb-6 flex flex-col items-center gap-3">
+              {clearResult && (
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent-success/10 border border-accent-success/20 text-accent-success text-sm animate-slide-in-up">
+                  <CheckCircle size={16} />
+                  <span className="font-medium">{clearResult}</span>
+                </div>
+              )}
               <button
-                onClick={handleClearAll}
+                onClick={() => setShowClearConfirm(true)}
                 disabled={clearing}
                 className="flex items-center gap-2 px-5 py-2.5 bg-accent-danger/10 hover:bg-accent-danger/20 text-accent-danger rounded-xl font-medium transition-all text-sm border border-accent-danger/20"
               >
@@ -116,14 +141,20 @@ const Dashboard = () => {
           )}
           </>
           )}
-        </main>
-      </div>
 
       {/* Floating Add Expense Button */}
       <FloatingAddButton />
 
-      {/* Footer */}
-      <Footer />
+      {/* Clear All Confirmation */}
+      <ConfirmModal
+        open={showClearConfirm}
+        title="Clear all expenses?"
+        message={`This will permanently delete all ${expenses.length} expenses. This cannot be undone.`}
+        confirmLabel="Delete All"
+        loading={clearing}
+        onConfirm={handleClearAll}
+        onCancel={() => setShowClearConfirm(false)}
+      />
     </div>
   );
 };

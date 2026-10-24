@@ -3,11 +3,10 @@ import { useExpenses } from '../context/ExpenseContext';
 import { getSpendingBreakdown, getExpenseType } from '../utils/categoryClassification';
 import { calculateFinancialScore, getScoreRating } from '../utils/prediction';
 import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Layout/Navbar';
+import { useTheme } from '../context/ThemeContext';
 import Card from '../components/UI/Card';
 import InsightCard from '../components/UI/InsightCard';
 import EmptyState from '../components/UI/EmptyState';
-import Footer from '../components/UI/Footer';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer, AreaChart, Area
@@ -21,21 +20,38 @@ import { format, parseISO, startOfWeek, startOfMonth, startOfYear, eachDayOfInte
 const COLORS = ['#00C9A7', '#7C6FFF', '#f59e0b', '#ec4899', '#ef4444', '#10b981', '#06b6d4', '#6b7280'];
 const SPLIT_COLORS = ['#00C9A7', '#7C6FFF'];
 
-// Dark tooltip style for charts
-const TOOLTIP_STYLE = {
+// Chart palettes per theme
+const DARK_TOOLTIP_STYLE = {
   backgroundColor: '#111827',
   border: '1px solid rgba(255,255,255,0.1)',
   borderRadius: '12px',
   color: '#F8FAFC',
   boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
 };
-const AXIS_COLOR = '#64748B';
-const GRID_COLOR = 'rgba(255,255,255,0.05)';
+const LIGHT_TOOLTIP_STYLE = {
+  backgroundColor: '#ffffff',
+  border: '1px solid #e2e8f0',
+  borderRadius: '12px',
+  color: '#1e293b',
+  boxShadow: '0 4px 24px rgba(0,0,0,0.10)',
+};
+const DARK_AXIS_COLOR = '#64748B';
+const LIGHT_AXIS_COLOR = '#94A3B8';
+const DARK_GRID_COLOR = 'rgba(255,255,255,0.05)';
+const LIGHT_GRID_COLOR = 'rgba(15,23,42,0.08)';
 
 const Analytics = () => {
   const { expenses } = useExpenses();
   const { profile } = useAuth();
+  const { isDark } = useTheme();
   const [period, setPeriod] = useState('monthly');
+
+  // Theme-aware chart styling
+  const TOOLTIP_STYLE = isDark ? DARK_TOOLTIP_STYLE : LIGHT_TOOLTIP_STYLE;
+  const AXIS_COLOR = isDark ? DARK_AXIS_COLOR : LIGHT_AXIS_COLOR;
+  const GRID_COLOR = isDark ? DARK_GRID_COLOR : LIGHT_GRID_COLOR;
+  const LABEL_COLOR = isDark ? '#94A3B8' : '#64748B';
+  const ITEM_COLOR = isDark ? '#F8FAFC' : '#1e293b';
 
   const monthlyBudget = profile?.monthly_budget ? parseFloat(profile.monthly_budget) : 10000;
 
@@ -112,10 +128,8 @@ const Analytics = () => {
   const hasData = filteredExpenses.length > 0;
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-fintech-bg transition-colors duration-300 flex flex-col">
-      <Navbar />
-      <main className="p-4 md:p-6 lg:p-8">
-          <div className="flex items-center justify-between mb-6">
+    <div className="animate-fade-in">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-accent-primary/20 flex items-center justify-center">
                 <BarChart3 size={24} className="text-accent-primary" />
@@ -229,7 +243,7 @@ const Analytics = () => {
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#F8FAFC', fontWeight: 600 }} labelStyle={{ color: '#94A3B8', fontWeight: 600 }} />
+                        <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: ITEM_COLOR, fontWeight: 600 }} labelStyle={{ color: LABEL_COLOR, fontWeight: 600 }} />
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
@@ -248,7 +262,7 @@ const Analytics = () => {
                               <Cell key={`cell-${index}`} fill={SPLIT_COLORS[index]} />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#F8FAFC', fontWeight: 600 }} labelStyle={{ color: '#94A3B8', fontWeight: 600 }} />
+                          <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: ITEM_COLOR, fontWeight: 600 }} labelStyle={{ color: LABEL_COLOR, fontWeight: 600 }} />
                         </PieChart>
                       </ResponsiveContainer>
                       <div className="flex justify-center gap-6 mt-2">
@@ -276,7 +290,7 @@ const Analytics = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
                     <XAxis dataKey="name" stroke={AXIS_COLOR} tick={{ fill: AXIS_COLOR, fontSize: 13, fontWeight: 500 }} />
                     <YAxis stroke={AXIS_COLOR} tick={{ fill: AXIS_COLOR, fontSize: 12, fontWeight: 500 }} />
-                    <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#F8FAFC', fontWeight: 600 }} labelStyle={{ color: '#94A3B8', fontWeight: 600 }} />
+                    <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: ITEM_COLOR, fontWeight: 600 }} labelStyle={{ color: LABEL_COLOR, fontWeight: 600 }} />
                     <Bar dataKey="value" radius={[8, 8, 0, 0]} animationDuration={400}>
                       {budgetVsActualData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -301,7 +315,7 @@ const Analytics = () => {
                       <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
                       <XAxis dataKey="date" stroke={AXIS_COLOR} fontSize={12} tick={{ fill: AXIS_COLOR, fontWeight: 500 }} />
                       <YAxis stroke={AXIS_COLOR} tick={{ fill: AXIS_COLOR, fontSize: 12, fontWeight: 500 }} />
-                      <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#F8FAFC', fontWeight: 600 }} labelStyle={{ color: '#94A3B8', fontWeight: 600 }} />
+                      <Tooltip formatter={(value) => `₹${value}`} contentStyle={TOOLTIP_STYLE} itemStyle={{ color: ITEM_COLOR, fontWeight: 600 }} labelStyle={{ color: LABEL_COLOR, fontWeight: 600 }} />
                       <Area type="monotone" dataKey="amount" stroke="#7C6FFF" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" name="Daily Spending" animationDuration={400} />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -335,8 +349,6 @@ const Analytics = () => {
               )}
             </>
           )}
-        </main>
-        <Footer />
     </div>
   );
 };

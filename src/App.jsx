@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ExpenseProvider } from './context/ExpenseContext';
 import { ThemeProvider } from './context/ThemeContext';
+import AppLayout from './components/Layout/AppLayout';
+import WelcomeGate from './components/Onboarding/WelcomeGate';
+import PageLoader from './components/UI/PageLoader';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -17,11 +20,7 @@ const ProtectedRoute = ({ children }) => {
   const { user, profile, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <p className="text-gray-600 dark:text-gray-400">Loading...</p>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (!user) {
@@ -30,7 +29,9 @@ const ProtectedRoute = ({ children }) => {
 
   return (
     <ExpenseProvider userId={user.id} profile={profile}>
-      {children}
+      <WelcomeGate>
+        <AppLayout>{children}</AppLayout>
+      </WelcomeGate>
     </ExpenseProvider>
   );
 };
@@ -40,11 +41,7 @@ const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <p className="text-gray-600 dark:text-gray-400">Loading...</p>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (user) {

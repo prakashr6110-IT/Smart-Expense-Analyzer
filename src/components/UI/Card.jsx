@@ -21,9 +21,9 @@ const Card = forwardRef(({
         rounded-2xl transition-all duration-200 ease-in-out
         bg-white dark:bg-[#111827]
         ${noBorder ? '' : 'border border-slate-200 dark:border-white/[0.07]'}
-        shadow-[0_4px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]
+        shadow-card dark:shadow-card-dark
         ${padding}
-        ${hoverable ? 'hover:border-brand-teal/30 dark:hover:border-brand-teal/30 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)]' : ''}
+        ${hoverable ? 'hover:border-brand-teal/30 hover:-translate-y-0.5 hover:shadow-card-hover dark:hover:shadow-card-dark-hover' : ''}
         ${className}
       `.trim().replace(/\s+/g, ' ')}
       style={style}
